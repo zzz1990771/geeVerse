@@ -1,0 +1,104 @@
+---
+title: "Yeast Cell Cycle Analysis: compare mean with median"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+
+
+```{r,warning=FALSE,message=FALSE,echo=F}
+#install.packages("BiocManager")
+#BiocManager::install("snpStats")
+#install.packages("PhenotypeSimulator")
+library(PhenotypeSimulator)
+#self-made functions
+source("./functions/qsicm.R")
+source("./functions/plrq.R")
+source("./functions/utils.R")
+if(!require(mvtnorm)){install.packages("mvtnorm");library(mvtnorm)}else{library(mvtnorm)}
+if(!require(SIS)){install.packages("SIS");library(SIS)}else{library(SIS)}
+if(!require(quantreg)){install.packages("quantreg");library(quantreg)}else{library(quantreg)}
+if(!require(MASS)){install.packages("MASS");library(MASS)}else{library(MASS)}
+if(!require(foreach)){install.packages("foreach");library(foreach)}else{library(foreach)}
+if(!require(EnvStats)){install.packages("EnvStats");library(EnvStats)}else{library(EnvStats)}
+if(!require(tidyverse)){install.packages("tidyverse");library(tidyverse)}else{library(tidyverse)}
+
+# if(!require(splines)){install.packages("splines");library(splines)}else{library(splines)}
+# if(!require(MultiOrd)){install.packages("MultiOrd");library(MultiOrd)}else{library(MultiOrd)}
+# if(!require(geepack)){install.packages("geepack");library(geepack)}else{library(geepack)}
+#load tiahnia version of PGEE
+if(!require(PGEE)){install.packages("PGEE");library(PGEE)}else{library(PGEE)}
+if(!require(ncvreg)){install.packages("ncvreg");library(ncvreg)}else{library(ncvreg)}
+if(!require(SIS)){install.packages("SIS");library(SIS)}else{library(SIS)}
+#source("Methods for Yeast Cell Cycle G1.R")
+```
+
+Load yeast cell cycle data.
+```{r}
+data("yeastG1")
+head(yeastG1)
+n_obs=4
+n_sub<-nrow(yeastG1)/n_obs
+
+
+predictors=names(yeastG1[,c(3:99)])
+x=as.matrix (yeastG1[,predictors])
+y=as.matrix(yeastG1$y)
+ 
+
+```
+# Given data, implement the method using the QPGEE package for the median.
+
+```{r}   
+
+    #non-longitudinal quantile regression as initial
+    betaint=coefficients(rq(y~0+x,tau = 0.5))
+
+
+    #Apply proposed method with hbic tuning
+
+ #Quanitle model
+  structure="Ind"
+      PQGEE_results <-  qlingee_scad_hbic(x,y,betaint,n_obs,structure,tau=0.5, max_it=100)
+  
+ colnames(x[,PQGEE_results$X_selected])
+      PQGEE_results$g
+      
+      #predictors[PQGEE_results$X_selected]
+```
+
+
+## Mean results using the PGEE function in our package
+
+```{r 90th percentile}
+
+library(PGEE)
+# define the input arguments
+formula <- "y ~.-id"
+family <- gaussian(link = "identity")
+lambda.vec <- seq(0.01,0.2,0.01)
+
+
+
+# find the optimum lambda
+# cv <- CVfit(formula = formula, id = id, data = yeastG1, family = family, scale.fix = TRUE,scale.value = 1, fold = 4, lambda.vec = lambda.vec, pindex = c(1,2), eps = 10^-6,maxiter = 30, tol = 10^-6)
+
+
+myfit1 <- PGEE(formula = formula, id = id, data = yeastG1, na.action = NULL,family = family, corstr = "independence", Mv = NULL,
+               beta_int = c(rep(0,dim(yeastG1)[2]-1)), R = NULL,
+               scale.fix = TRUE,scale.value = 1, lambda = 0.14,
+               pindex = c(1,2), eps = 10^-6,maxiter = 30, tol = 10^-6,
+               silent = TRUE)
+
+myfit1
+
+
+index1 <- which(abs(coef(summary(myfit1))[,"Estimate"]) > 10^-3)
+names(abs(coef(summary(myfit1))[index1,"Estimate"]))
+
+```
+
+
+

@@ -1,0 +1,27 @@
+Package: geeVerse
+Type: Package
+Title: Longitudinal/Non-longitudinal Mean/Quantile Regression with Generalized
+    Estimating Equations for Hign Dimensional Data
+Version: 0.1.0
+Authors@R: c(
+    person("Tianhai", "Zu", email = "zuti@mail.uc.edu", role = c("aut", "cre")),
+    person("Brittany", "Green", email = "brittany.green.1@louisville.edu", role = c("aut","ctb")),
+    person("Yan", "Yu", email = "yan.yu@uc.edu", role = c("aut","ctb"))
+  )
+Description: To provide a comprehensive analysis of high dimensional data sets
+    with a longitudinal response, we propose this package to provide computationally
+    efficient implementations of penalized generalized estimating equations for 
+    conditional quantiles and the conditional mean, when the risk factors are 
+    high dimensional and the data is longitudinal.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    MASS,
+    mvtnorm,
+    Rcpp (>= 0.10.2),
+    RcppEigen (>= 0.3.2.1.1),
+    Matrix,
+    methods
+LinkingTo: Rcpp, RcppEigen
+RoxygenNote: 7.2.3

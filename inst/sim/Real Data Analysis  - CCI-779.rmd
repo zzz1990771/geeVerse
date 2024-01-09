@@ -1,0 +1,158 @@
+---
+title: "CCI-779 analysis"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+
+
+```{r,warning=FALSE,message=FALSE,echo=F}
+#install.packages("BiocManager")
+#BiocManager::install("snpStats")
+#install.packages("PhenotypeSimulator")
+library(PhenotypeSimulator)
+#self-made functions
+source("./functions/qsicm.R")
+source("./functions/plrq.R")
+source("./functions/utils.R")
+if(!require(mvtnorm)){install.packages("mvtnorm");library(mvtnorm)}else{library(mvtnorm)}
+if(!require(SIS)){install.packages("SIS");library(SIS)}else{library(SIS)}
+if(!require(quantreg)){install.packages("quantreg");library(quantreg)}else{library(quantreg)}
+if(!require(MASS)){install.packages("MASS");library(MASS)}else{library(MASS)}
+if(!require(foreach)){install.packages("foreach");library(foreach)}else{library(foreach)}
+if(!require(EnvStats)){install.packages("EnvStats");library(EnvStats)}else{library(EnvStats)}
+if(!require(tidyverse)){install.packages("tidyverse");library(tidyverse)}else{library(tidyverse)}
+
+# if(!require(splines)){install.packages("splines");library(splines)}else{library(splines)}
+# if(!require(MultiOrd)){install.packages("MultiOrd");library(MultiOrd)}else{library(MultiOrd)}
+# if(!require(geepack)){install.packages("geepack");library(geepack)}else{library(geepack)}
+#load tiahnia version of PGEE
+if(!require(PGEE)){install.packages("PGEE");library(PGEE)}else{library(PGEE)}
+if(!require(ncvreg)){install.packages("ncvreg");library(ncvreg)}else{library(ncvreg)}
+if(!require(SIS)){install.packages("SIS");library(SIS)}else{library(SIS)}
+if(!require(rqPen)){install.packages("rqPen");library(rqPen)}else{library(rqPen)}
+#source("Methods for Yeast Cell Cycle G1.R")
+
+```
+
+Load CCI-779 data which has a varying number of observations per participant.
+```{r}
+CCI_data<-read.csv("CCI-779_data.csv")
+
+
+predictors=names(CCI_data[,c(3:ncol(CCI_data))])
+x=as.matrix (CCI_data[,predictors])
+y=as.matrix(CCI_data$y)
+ 
+n_obs =table(CCI_data$ID)
+
+```
+# Given data, implement the method using the QPGEE package.
+
+```{r}   
+
+# use SIS given the dimension of the data
+
+  SIS_results <- NULL
+        #screening by SIS
+    SIS_result <- SIS(x,y,iter=TRUE,greedy=FALSE,nsis=200)
+    selected_X <- SIS_result$sis.ix
+
+    #keep screened X
+    x=x[,selected_X]
+
+
+ #non-longitudinal quantile regression as initial
+    betaint=coefficients(rq(y~0+x,tau = 0.9,method="lasso"))
+
+PQGEE_resultsMedian=PQGEE_results=PQGEE_resultstenth=NULL
+    #Apply proposed method with hbic tuning
+   # for(structure in c("Ind","CS","AR")){
+  #90th percentile
+  WCM =c("Ind","CS","AR")
+  for(structure in WCM){
+   
+     struct_num=match(structure, WCM)
+     
+            PQGEE_results[[struct_num]] <-  qlingee_scad_hbic(x,y,betaint,n_obs,structure,tau=0.9, max_it=100)
+  
+          #50th percentile
+
+        betaint=coefficients(rq(y~0+x,tau = 0.5,method="lasso"))
+                 PQGEE_resultsMedian[[struct_num]]  <-  qlingee_scad_hbic(x,y,betaint,n_obs,structure,tau=0.5, max_it=100)
+                  
+          #10th percentile
+                  # betaint=coefficients(rq(y~0+x,tau = ,method="lasso"))
+                  # PQGEE_resultstenth[[struct_num]]  <-  qlingee_scad_hbic(x,y,betaint,n_obs,structure,tau=0.1, max_it=100)
+                  # 
+    
+  }
+   
+    
+  
+```
+
+
+## 90th percentile Results
+
+```{r 50th percentile}
+
+res<-compile_result_demonstration_CCI(PQGEE_resultsMedian)
+
+res
+#90th percentile
+
+ for(structure in c("Ind","CS","AR")){
+    struct_num=match(structure,c("Ind","CS","AR"))
+    print(structure)
+print(predictors[PQGEE_results[[struct_num]]$X_selected])
+print(PQGEE_results[[struct_num]]$beta[PQGEE_results[[struct_num]]$X_selected])
+ }
+
+
+xtable::xtable(res, digits =4)
+
+```
+
+## Mean results
+
+
+
+## 50th percentile Results
+
+```{r 50th percentile}
+    #predictors[PQGEE_resultsMedian$X_selected]
+
+    #PQGEE_resultsMedian$beta[PQGEE_resultsMedian$X_selected]
+    
+    for(structure in c("Ind","CS","AR")){
+    struct_num=match(structure,c("Ind","CS","AR"))
+    print(structure)
+print(predictors[PQGEE_resultsMedian[[struct_num]]$X_selected])
+print(PQGEE_resultsMedian[[struct_num]]$beta[PQGEE_resultsMedian[[struct_num]]$X_selected])
+    }
+
+```
+    
+## 10th percentile Results
+    
+```{r 10th percentile}
+
+    for(structure in c("Ind","CS","AR")){
+    struct_num=match(structure,c("Ind","CS","AR"))
+    print(structure)
+print(predictors[PQGEE_resultstenth[[struct_num]]$X_selected])
+print(PQGEE_resultstenth[[struct_num]]$beta[PQGEE_resultstenth[[struct_num]]$X_selected])
+    }
+
+
+    #predictors[PQGEE_resultstenth$X_selected]
+    #PQGEE_resultstenth$beta[PQGEE_resultstenth$X_selected]
+        
+```
+    
+    
+    
+
