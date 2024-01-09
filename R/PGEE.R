@@ -63,8 +63,8 @@
 #'
 #' data = data.frame(X,y,id)
 #'
-#' PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
-#' PGEE_fit$coefficients
+#' #PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
+#' #PGEE_fit$coefficients
 #'
 #' @export
 PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian(link = "identity"),

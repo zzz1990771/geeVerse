@@ -48,7 +48,7 @@
 #' for (i in 1:n_sub){
 #'   id<-c(id,rep(i,n_obs[i]))
 #'   sigmai=Siga_cov(rho,type,n_obs[i])
-#'   if (dis=="normal") ei=MASS::rmvnorm(1, mean=rep(0, n_obs[i]), sigma=sigmai)
+#'   if (dis=="normal") ei=mvtnorm::rmvnorm(1, mean=rep(0, n_obs[i]), sigma=sigmai)
 #'   if (dis=="t") ei=mvtnorm::rmvt(1, sigmai, df = 4, delta = rep(0, n_obs[i]))
 #'   e=c(e,ei);
 #' }
@@ -64,28 +64,10 @@
 #' qpgee(x,y,tau=0.5,nk=n_obs)
 #'
 #' @export
-#' @importFrom stats rq
+#' @importFrom quantreg rq
 #' @importFrom MASS ginv
 #' @importFrom stats pnorm
 #' @importFrom stats dnorm
-#' @importFrom base diag
-#' @importFrom base matrix
-#' @importFrom base setdiff
-#' @importFrom base abs
-#' @importFrom base sum
-#' @importFrom base rep
-#' @importFrom base which
-#' @importFrom base is.null
-#' @importFrom base c
-#' @importFrom base length
-#' @importFrom base sum
-#' @importFrom base cumsum
-#' @importFrom base coefficients
-#' @importFrom base max
-#' @importFrom base t
-#' @importFrom base sqrt
-#' @importFrom base log
-#' @importFrom base ncol
 qpgee<-function(x,y,tau=0.5,nk=rep(1,length(y)),worktype="CS",lambda=0.1,betaint=NULL,f0=NULL,max_it = 100,cutoff=10^-1){
   x_all = x
   cn = c(0, cumsum(nk));nsub=length(nk);nx=dim(x)[2];

@@ -78,7 +78,7 @@ id<-NULL
 for (i in 1:n_sub){
   id<-c(id,rep(i,n_obs[i]))
   sigmai=Siga_cov(rho,type,n_obs[i])
-  if (dis=="normal") ei=MASS::rmvnorm(1, mean=rep(0, n_obs[i]), sigma=sigmai)
+  if (dis=="normal") ei=mvtnorm::rmvnorm(1, mean=rep(0, n_obs[i]), sigma=sigmai)
   if (dis=="t") ei=mvtnorm::rmvt(1, sigmai, df = 4, delta = rep(0, n_obs[i]))
   e=c(e,ei);
 }

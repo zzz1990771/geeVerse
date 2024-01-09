@@ -20,6 +20,8 @@ pp_scad_sim <- function(z,lambda_si,a=3.7) {
 
 
 #correlated error function
+
+#' @export
 Siga_cov<-function(rho,type,nt){
   sigma=matrix(0,nt,nt)
   if (type=="cs"){
