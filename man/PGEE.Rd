@@ -30,6 +30,48 @@ PGEE(
 \item{id}{A vector for identifying subjects/clusters.}
 
 \item{data}{A data frame which stores the variables in \code{formula} with \code{id} variable.}
+
+\item{na.action}{A function to remove missing values from the data. Only \code{na.omit} is allowed here.}
+
+\item{family}{A \code{family} object: a list of functions and expressions for defining \code{link} and
+\code{variance} functions. Families supported in \code{PGEE} are \code{binomial}, \code{gaussian}, \code{gamma} and
+\code{poisson}. The \code{links}, which are not available in \code{gee}, is not available here. The default family
+is \code{gaussian}.}
+
+\item{corstr}{A character string, which specifies the type of correlation structure.
+Structures supported in \code{PGEE} are \code{"AR-1"},\code{"exchangeable"}, \code{"fixed"}, \code{"independence"},
+\code{"stat_M_dep"},\code{"non_stat_M_dep"}, and \code{"unstructured"}. The default \code{corstr} type is
+\code{"independence"}.}
+
+\item{Mv}{If either \code{"stat_M_dep"}, or \code{"non_stat_M_dep"} is specified in \code{corstr}, then this
+assigns a numeric value for \code{Mv}. Otherwise, the default value is \code{NULL}.}
+
+\item{beta_int}{User specified initial values for regression parameters. The default value is \code{NULL}.}
+
+\item{R}{If \code{corstr = "fixed"} is specified, then \code{R} is a square matrix of dimension maximum cluster
+size containing the user specified correlation. Otherwise, the default value is \code{NULL}.}
+
+\item{scale.fix}{A logical variable; if true, the scale parameter is fixed at the value of \code{scale.value}.
+The default value is \code{TRUE}.}
+
+\item{scale.value}{If \code{scale.fix = TRUE}, this assignes a numeric value to which the scale parameter should be
+fixed. The default value is 1.}
+
+\item{lambda}{A numerical value for the penalization parameter of the scad function, which is estimated via
+cross-validation.}
+
+\item{pindex}{An index vector showing the parameters which are not subject to penalization. The default value
+is \code{NULL}. However, in case of a model with intercept, the intercept parameter should be never penalized.}
+
+\item{eps}{A numerical value for the epsilon used in minorization-maximization algorithm. The default value is
+\code{10^-6}.}
+
+\item{maxiter}{The number of iterations that is used in the estimation algorithm. The default value is \code{25}.}
+
+\item{tol}{The tolerance level that is used in the estimation algorithm. The default value is \code{10^-3}.}
+
+\item{silent}{A logical variable; if false, the regression parameter estimates at each iteration are
+printed. The default value is \code{TRUE}.}
 }
 \value{
 a PGEE object, which includes:
@@ -64,7 +106,7 @@ y=X\%*\%beta+(1+abs(X[,1]))*e
 
 data = data.frame(X,y,id)
 
-#PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
-#PGEE_fit$coefficients
+PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
+PGEE_fit$coefficients
 
 }

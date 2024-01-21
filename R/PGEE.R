@@ -6,34 +6,34 @@
 #' @param formula A formula expression \code{response ~ predictors};
 #' @param id A vector for identifying subjects/clusters.
 #' @param data A data frame which stores the variables in \code{formula} with \code{id} variable.
-#' @param na.action A function to remove missing values from the data. Only \code{na.omit} is allowed here.}
+#' @param na.action A function to remove missing values from the data. Only \code{na.omit} is allowed here.
 #' @param family A \code{family} object: a list of functions and expressions for defining \code{link} and
 #' \code{variance} functions. Families supported in \code{PGEE} are \code{binomial}, \code{gaussian}, \code{gamma} and
 #' \code{poisson}. The \code{links}, which are not available in \code{gee}, is not available here. The default family
-#' is \code{gaussian}.}
+#' is \code{gaussian}.
 #' @param corstr A character string, which specifies the type of correlation structure.
 #' Structures supported in \code{PGEE} are \code{"AR-1"},\code{"exchangeable"}, \code{"fixed"}, \code{"independence"},
 #' \code{"stat_M_dep"},\code{"non_stat_M_dep"}, and \code{"unstructured"}. The default \code{corstr} type is
-#' \code{"independence"}.}
+#' \code{"independence"}.
 #' @param Mv If either \code{"stat_M_dep"}, or \code{"non_stat_M_dep"} is specified in \code{corstr}, then this
-#' assigns a numeric value for \code{Mv}. Otherwise, the default value is \code{NULL}.}
-#' @param beta_int User specified initial values for regression parameters. The default value is \code{NULL}.}
+#' assigns a numeric value for \code{Mv}. Otherwise, the default value is \code{NULL}.
+#' @param beta_int User specified initial values for regression parameters. The default value is \code{NULL}.
 #' @param R If \code{corstr = "fixed"} is specified, then \code{R} is a square matrix of dimension maximum cluster
-#' size containing the user specified correlation. Otherwise, the default value is \code{NULL}.}
+#' size containing the user specified correlation. Otherwise, the default value is \code{NULL}.
 #' @param scale.fix A logical variable; if true, the scale parameter is fixed at the value of \code{scale.value}.
-#' The default value is \code{TRUE}.}
+#' The default value is \code{TRUE}.
 #' @param scale.value If \code{scale.fix = TRUE}, this assignes a numeric value to which the scale parameter should be
-#' fixed. The default value is 1.}
+#' fixed. The default value is 1.
 #' @param lambda A numerical value for the penalization parameter of the scad function, which is estimated via
-#' cross-validation.}
+#' cross-validation.
 #' @param pindex An index vector showing the parameters which are not subject to penalization. The default value
-#' is \code{NULL}. However, in case of a model with intercept, the intercept parameter should be never penalized.}
+#' is \code{NULL}. However, in case of a model with intercept, the intercept parameter should be never penalized.
 #' @param eps A numerical value for the epsilon used in minorization-maximization algorithm. The default value is
-#' \code{10^-6}.}
-#' @param maxiter The number of iterations that is used in the estimation algorithm. The default value is \code{25}.}
-#' @param tol The tolerance level that is used in the estimation algorithm. The default value is \code{10^-3}.}
+#' \code{10^-6}.
+#' @param maxiter The number of iterations that is used in the estimation algorithm. The default value is \code{25}.
+#' @param tol The tolerance level that is used in the estimation algorithm. The default value is \code{10^-3}.
 #' @param silent A logical variable; if false, the regression parameter estimates at each iteration are
-#' printed. The default value is \code{TRUE}.}
+#' printed. The default value is \code{TRUE}.
 #'
 #' @return a PGEE object, which includes:
 #'         fitted coefficients - the fitted single index coefficients with unit norm and first component being non negative
@@ -63,15 +63,15 @@
 #'
 #' data = data.frame(X,y,id)
 #'
-#' #PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
-#' #PGEE_fit$coefficients
+#' PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
+#' PGEE_fit$coefficients
 #'
 #' @export
 PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian(link = "identity"),
            corstr = "independence", Mv = NULL, beta_int = NULL, R = NULL, scale.fix = TRUE,
            scale.value = 1, lambda, pindex = NULL, eps = 10^-6, maxiter = 30, tol = 10^-3,
            silent = TRUE)  {
-  #library(tictoc)
+
     #pass the call
     call <- match.call()
     m <- match.call(expand.dots = FALSE)
@@ -265,7 +265,7 @@ PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian
       beta_old<-beta_new
       #update beta by equation 5.1
       #tic("update beta")
-      beta_new<-matrix(beta_old)+geninv(H+N*E)%*%(S-N*E%*%matrix(beta_old))
+      beta_new<-matrix(beta_old)+Matrix::solve(H+N*E)%*%(S-N*E%*%matrix(beta_old))
       #estimate R with new beta p1
       ##toc()
       #tic("working matrix")
@@ -294,8 +294,8 @@ PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian
 
 
     estb=beta_new
-    nv=naive.var<-geninv(H+N*E)
-    rv=robust.var<-geninv(H+N*E)%*%M%*%geninv(H+N*E)
+    nv=naive.var<-Matrix::solve(H+N*E)
+    rv=robust.var<-Matrix::solve(H+N*E)%*%M%*%Matrix::solve(H+N*E)
     final_iter=iter
     final_diff=diff
 
@@ -344,7 +344,6 @@ PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian
     fit$error <- final_diff
     dimnames(fit$robust.variance) <- list(xnames, xnames)
     dimnames(fit$naive.variance) <- list(xnames, xnames)
-    #toc()
     fit
 
 }
@@ -577,16 +576,16 @@ S_H_E_M <- function(N,nt,y,X,nx,family,beta_new,Rhat,fihat,lambda,pindex,eps=10^
     #bigV<-fihat*bigV
 
     ##This is S in Wang et al.(2012) eq4
-    sum200<-t(bigD)%*%geninv(bigV)%*%ym      #this is like gradient
+    sum200<-t(bigD)%*%Matrix::solve(bigV)%*%ym      #this is like gradient
     sum201<-sum201+sum200
 
     ##This is H in Wang et al.(2012)
-    sum300<-t(bigD)%*%geninv(bigV)%*%bigD    #this is for information matrix.
+    sum300<-t(bigD)%*%Matrix::solve(bigV)%*%bigD    #this is for information matrix.
     sum301<-sum301+sum300
 
     ##Speed up the code##
-    SSA=sqrt(geninv(bigA))
-    SRhat=geninv(Rhat[1:nt[i],1:nt[i],i])
+    SSA=sqrt(Matrix::solve(bigA))
+    SRhat=Matrix::solve(Rhat[1:nt[i],1:nt[i],i])
     SSAym=(SSA%*%ym)
 
     sum400<-t(bigD)%*%SSA%*%SRhat%*%(SSAym%*%t(SSAym))%*%SRhat%*%SSA%*%bigD
