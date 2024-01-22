@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
-#include "utils.h"
 
 using namespace Rcpp;
 //using namespace RcppEigen;
@@ -34,9 +33,9 @@ SEXP geninv(SEXP GG){
 
     if (n < m) {
       transp = true;
-      A = xxt(G);
+      A = G * G.transpose();
     } else {
-      A = xtx(G);
+      A = G.transpose() * G;
     }
 
     int r = 0;
@@ -61,7 +60,8 @@ SEXP geninv(SEXP GG){
     }
 
     MatrixXd M(MatrixXd(r, r));
-    M = xtx(L.block(0, 0, mn, r)).inverse();
+    M = L.block(0, 0, mn, r);
+    M = (M.transpose() * M).inverse();
 
     MatrixXd Y(MatrixXd(m, n));
 

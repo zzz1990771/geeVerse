@@ -294,7 +294,6 @@ qlingee_scad_hbic<-function(x,y,betaint,nk,worktype,f0=rep(1,length(y)),tau=0.5,
     lambda = exp(seq(log(lambda_max), log(lambda_max * lambda.min.ratio),
                      length.out = 30))
   }
-  library(doParallel)
   n_core = parallel::detectCores(FALSE,FALSE)
   cl <- parallel::makeCluster(n_core)
   doParallel::registerDoParallel(cl)
