@@ -22,7 +22,6 @@ Imports:
     quantreg,
     Rcpp (>= 0.10.2),
     RcppEigen (>= 0.3.2.1.1),
-    Matrix,
     methods
 LinkingTo: Rcpp, RcppEigen
 RoxygenNote: 7.2.3

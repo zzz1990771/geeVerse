@@ -2,9 +2,9 @@
 #include <RcppEigen.h>
 #include <Eigen/LU>
 #include <Eigen/SparseCholesky>
-#include <vector> 
-#include <functional> 
-#include <algorithm> 
+#include <vector>
+#include <functional>
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 #include "utils.h"
@@ -24,14 +24,14 @@ SEXP geninv(SEXP GG){
     const int n(G.rows());
     const int m(G.cols());
     const int mn(std::min(n, m));
-    
+
     bool transp(false);
     double tol(1.0e-10);
     MatrixXd A(MatrixXd(mn, mn));
     MatrixXd L(MatrixXd(mn, mn).setZero());
-    
-    
-    
+
+
+
     if (n < m) {
       transp = true;
       A = xxt(G);
@@ -42,14 +42,14 @@ SEXP geninv(SEXP GG){
     int r = 0;
     for (int k = 0; k < mn; k++) {
       r++;
-      
+
       if (r == 1) {
         L.block(k, r - 1, mn - k, 1) = A.block(k, k, mn - k, 1);
       } else {
-        L.block(k, r - 1, mn - k, 1) = A.block(k, k, mn - k, 1) - 
+        L.block(k, r - 1, mn - k, 1) = A.block(k, k, mn - k, 1) -
                 L.block(k, 0, mn - k, r - 1) * L.block(k, 0, 1, r - 1).adjoint();
       }
-      
+
       if (L(k, r - 1) > tol) {
         L.block(k, r - 1, 1, 1) = L.block(k, r - 1, 1, 1).array().sqrt();
         if (k + 1 < mn) {
@@ -64,7 +64,7 @@ SEXP geninv(SEXP GG){
     M = xtx(L.block(0, 0, mn, r)).inverse();
 
     MatrixXd Y(MatrixXd(m, n));
-    
+
     if (transp) {
       Y = G.adjoint() * L.block(0, 0, mn, r) * M * M * L.block(0, 0, mn, r).adjoint();
     } else {

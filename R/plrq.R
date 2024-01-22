@@ -61,13 +61,14 @@
 #' y=X%*%beta+(1+ka*abs(X[,1]))*e
 #'
 #' #fit qpgee
-#' qpgee(x,y,tau=0.5,nk=n_obs)
+#' qpgee.fit = qpgee(x,y,tau=0.5,nk=n_obs)
+#' qpgee.fit$beta
 #'
 #' @export
 #' @importFrom quantreg rq
-#' @importFrom MASS ginv
 #' @importFrom stats pnorm
 #' @importFrom stats dnorm
+#' @useDynLib geeVerse
 qpgee<-function(x,y,tau=0.5,nk=rep(1,length(y)),worktype="CS",lambda=0.1,betaint=NULL,f0=NULL,max_it = 100,cutoff=10^-1){
   x_all = x
   cn = c(0, cumsum(nk));nsub=length(nk);nx=dim(x)[2];
@@ -226,8 +227,8 @@ qpgee<-function(x,y,tau=0.5,nk=rep(1,length(y)),worktype="CS",lambda=0.1,betaint
         xa = x[a_ind,];
         Ha2=diag(as.vector(dnorm(nsub^0.5*ha/r2a,0,1)/r2a))
       }
-      U2=U2+t(xa)%*%Ga%*%ginv(Ra)%*%fra
-      H2=H2+nsub^0.5*t(xa)%*%Ga%*%ginv(Ra)%*%Ha2%*%xa
+      U2=U2+t(xa)%*%Ga%*%geninv(Ra)%*%fra
+      H2=H2+nsub^0.5*t(xa)%*%Ga%*%geninv(Ra)%*%Ha2%*%xa
     }
 
 
@@ -242,9 +243,9 @@ qpgee<-function(x,y,tau=0.5,nk=rep(1,length(y)),worktype="CS",lambda=0.1,betaint
       }else{
         sigma <- nsub*pe
       }
-      diff2=ginv(H2 + sigma)%*%(U2-sigma%*%beta)
+      diff2=geninv(H2 + sigma)%*%(U2-sigma%*%beta)
     }else{
-      diff2=ginv(H2)%*%U2
+      diff2=geninv(H2)%*%U2
     }
 
 
@@ -373,7 +374,7 @@ lssimgee<-function(x,y,betaint,nk,id,worktype="exchangeable"){
     iteration=iteration+1
     Jb=Jbeta(as.vector(betaold))
 
-    eta=ginv(t(B)%*%B)%*%t(B)%*%x;xb=x-B%*%eta
+    eta=geninv(t(B)%*%B)%*%t(B)%*%x;xb=x-B%*%eta
     xs=diag(as.vector(ghat1))%*%xb%*%Jb
     ys=y-ghat+xs%*%betaold
 

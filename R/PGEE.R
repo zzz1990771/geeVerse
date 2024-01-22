@@ -65,7 +65,7 @@
 #'
 #' PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
 #' PGEE_fit$coefficients
-#'
+#' @import Rcpp
 #' @export
 PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian(link = "identity"),
            corstr = "independence", Mv = NULL, beta_int = NULL, R = NULL, scale.fix = TRUE,
@@ -265,7 +265,7 @@ PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian
       beta_old<-beta_new
       #update beta by equation 5.1
       #tic("update beta")
-      beta_new<-matrix(beta_old)+Matrix::solve(H+N*E)%*%(S-N*E%*%matrix(beta_old))
+      beta_new<-matrix(beta_old)+geninv(H+N*E)%*%(S-N*E%*%matrix(beta_old))
       #estimate R with new beta p1
       ##toc()
       #tic("working matrix")
@@ -294,8 +294,8 @@ PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian
 
 
     estb=beta_new
-    nv=naive.var<-Matrix::solve(H+N*E)
-    rv=robust.var<-Matrix::solve(H+N*E)%*%M%*%Matrix::solve(H+N*E)
+    nv=naive.var<-geninv(H+N*E)
+    rv=robust.var<-geninv(H+N*E)%*%M%*%geninv(H+N*E)
     final_iter=iter
     final_diff=diff
 
@@ -576,16 +576,16 @@ S_H_E_M <- function(N,nt,y,X,nx,family,beta_new,Rhat,fihat,lambda,pindex,eps=10^
     #bigV<-fihat*bigV
 
     ##This is S in Wang et al.(2012) eq4
-    sum200<-t(bigD)%*%Matrix::solve(bigV)%*%ym      #this is like gradient
+    sum200<-t(bigD)%*%geninv(bigV)%*%ym      #this is like gradient
     sum201<-sum201+sum200
 
     ##This is H in Wang et al.(2012)
-    sum300<-t(bigD)%*%Matrix::solve(bigV)%*%bigD    #this is for information matrix.
+    sum300<-t(bigD)%*%geninv(bigV)%*%bigD    #this is for information matrix.
     sum301<-sum301+sum300
 
     ##Speed up the code##
-    SSA=sqrt(Matrix::solve(bigA))
-    SRhat=Matrix::solve(Rhat[1:nt[i],1:nt[i],i])
+    SSA=sqrt(geninv(bigA))
+    SRhat=geninv(Rhat[1:nt[i],1:nt[i],i])
     SSAym=(SSA%*%ym)
 
     sum400<-t(bigD)%*%SSA%*%SRhat%*%(SSAym%*%t(SSAym))%*%SRhat%*%SSA%*%bigD
