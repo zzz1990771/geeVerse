@@ -68,5 +68,6 @@ qpgee.fit$beta
 #fit qpgee with auto selected lambda with parallel computing
 qpgee.fit = qpgee_tune(x,y,tau=0.5,nk=n_obs,ncore=10)
 qpgee.fit$beta
+qpgee.fit$best_lambda
 ```
 
