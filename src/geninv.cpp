@@ -8,13 +8,16 @@
 #include <iostream>
 #include <cmath>
 
+// via the depends attribute we tell Rcpp to create hooks for
+// RcppEigen so that the build process will know what to do
+//
+// [[Rcpp::depends(RcppEigen)]]
+
 using namespace Rcpp;
-//using namespace RcppEigen;
+using namespace RcppEigen;
 
 // [[Rcpp::export]]
 SEXP geninv(SEXP GG){
-  using namespace Rcpp;
-  using namespace RcppEigen;
   try {
     using Eigen::Map;
     using Eigen::MatrixXd;

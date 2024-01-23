@@ -62,6 +62,11 @@ x=X=matrix(rnorm(N*p),N,p)
 y=X%*%beta+(1+ka*abs(X[,1]))*e
 
 #fit qpgee
-qpgee(x,y,tau=0.5,nk=n_obs)
+qpgee.fit = qpgee(x,y,tau=0.5,nk=n_obs)
+qpgee.fit$beta
+
+#fit qpgee with auto selected lambda with parallel computing
+qpgee.fit = qpgee_tune(x,y,tau=0.5,nk=n_obs,ncore=10)
+qpgee.fit$beta
 ```
 
