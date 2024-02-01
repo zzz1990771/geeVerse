@@ -300,15 +300,19 @@ qpgee <-function(x, y,
 
     #calculate hbic
     hbic = log(mcl * N) + (log(nsub) / (2 * nsub)) * log(log(NCOL(x))) * length(X_selected)
-    list(
+
+
+    qpgee.obj = list(
       beta = beta_out,
-      g = ghat,
+      fitted = ghat,
       R = R,
       X_selected = X_selected,
       mcl = mcl,
       hbic = hbic,
       converge = converge
     )
+    class(qpgee.obj) <- "qpgee"
+    return(qpgee.obj)
 
   }
 
@@ -502,6 +506,7 @@ qpgee_cv <-
                        l,
                        max_it,
                        cutoff)
+        #use check loss to select best lambda via cross-validation
         cl = c(cl, check_loss(y[test_ind] - x[test_ind, ] %*% result$beta, tau))
       }
 
@@ -513,7 +518,8 @@ qpgee_cv <-
 
 
 #need further work on this
-predict.plrq <- function (object, newdata)
+#' @export
+predict.qpgee <- function (object, newdata)
 {
   if (missing(newdata)) {
     return(napredict(object$na.action, object$fitted))

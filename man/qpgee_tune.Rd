@@ -26,8 +26,8 @@ qpgee_tune(
 
 \item{tau}{The quantile to be estimated (default is 0.5, the median).}
 
-\item{method}{The criterion to select level of penalty. Options are "HBIC" and
-"CV".}
+\item{method}{The criterion to select level of penalty. Currently it only
+supports "HBIC".}
 
 \item{ncore}{A numeric value specifying how many core to use.}
 
@@ -98,7 +98,7 @@ x=X=matrix(rnorm(N*p),N,p)
 y=X\%*\%beta+(1+ka*abs(X[,1]))*e
 
 #fit qpgee with auto selected lambda
-qpgee.fit = qpgee_tune(x,y,tau=0.5,nk=n_obs)
+qpgee.fit = qpgee_tune(x,y,tau=0.5,nk=n_obs,ncore=10)
 qpgee.fit$beta
 
 }
