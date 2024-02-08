@@ -1,6 +1,6 @@
 # geeVerse
 
-`geeVerse` is an R package to provide computationally efficient implementations of penalized generalized estimating equations for conditional quantiles and the conditional mean, when the risk factors are high dimensional and the data is longitudinal.
+`geeVerse` is an R package to provide computationally efficient implementations of penalized generalized estimating equations for any combination of 1) simultaneous variable selection and estimation for high and even ultra-high dimensional data, 2) conditional quantile or mean regression, and 3) longitudinal or cross-sectional data analysis.
 
 ## Installation
 
