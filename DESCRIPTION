@@ -8,11 +8,13 @@ Authors@R: c(
     person("Brittany", "Green", email = "brittany.green.1@louisville.edu", role = c("aut","ctb")),
     person("Yan", "Yu", email = "yan.yu@uc.edu", role = c("aut","ctb"))
   )
-Description: To provide a comprehensive analysis of high dimensional data sets
-    with a longitudinal response, we propose this package to provide computationally
-    efficient implementations of penalized generalized estimating equations for 
-    conditional quantiles and the conditional mean, when the risk factors are 
-    high dimensional and the data is longitudinal.
+Description: We propose this package to provide  
+    To provide a comprehensive analysis of high dimensional data sets
+    with a longitudinal response, we propose this package to accomendate provide 
+    any combination of 1) simultaneous variable selection and estimation for high 
+    and even ultra-high dimensional data, 2) conditional quantile or mean regression, 
+    and 3) longitudinal or cross-sectional data analysis via computationally 
+    efficient implementations of penalized generalised estimating equations.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
