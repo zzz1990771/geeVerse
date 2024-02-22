@@ -1,7 +1,7 @@
 Package: geeVerse
 Type: Package
-Title: Longitudinal/Non-longitudinal Mean/Quantile Regression with Generalized
-    Estimating Equations for High-dimensional Data
+Title: Longitudinal/Non-longitudinal Mean/Quantile Regression and Variable Selection
+with Penalized Generalized Estimating Equations for Utra-high Dimensional Data
 Version: 0.1.0
 Authors@R: c(
     person("Tianhai", "Zu", email = "zuti@mail.uc.edu", role = c("aut", "cre")),
