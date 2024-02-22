@@ -9,11 +9,11 @@ Authors@R: c(
     person("Yan", "Yu", email = "yan.yu@uc.edu", role = c("aut","ctb"))
   )
 Description: To provide a comprehensive analysis of high dimensional data sets
-    with a longitudinal response, this package to accommodate provide 
-    any combination of 1) simultaneous variable selection and estimation for high 
-    and even ultra-high dimensional data, 2) conditional quantile or mean regression, 
-    3) longitudinal or cross-sectional data analysis and 4) balanced or imbalanced 
-    via computationally efficient implementations of penalized generalized estimating equations.
+    with a longitudinal response, this package provides analysis for any combination 
+    of 1) simultaneous variable selection and estimation 2) conditional quantile or mean regression, 
+    3) longitudinal or cross-sectional data analysis 4) balanced or imbalanced data 5) moderate,
+    high or even ultra-high dimensional data, via computationally efficient implementations of
+    penalized generalized estimating equations.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
