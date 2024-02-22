@@ -7,7 +7,7 @@ Authors@R: c(
     person("Brittany", "Green", email = "brittany.green.1@louisville.edu", role = c("aut","ctb")),
     person("Yan", "Yu", email = "yan.yu@uc.edu", role = c("aut","ctb"))
   )
-Description: To provide a comprehensive analysis of high-dimensional longitudinal data,
+Description: To provide a comprehensive analysis of high dimensional longitudinal data,
     this package provides analysis for any combination of 
     1) simultaneous variable selection and estimation, 2) mean regression or quantile regression
     for heterogeneous data, 3) cross-sectional or longitudinal data, 4) balanced or imbalanced data, 
