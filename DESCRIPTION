@@ -9,7 +9,7 @@ Authors@R: c(
     person("Yan", "Yu", email = "yan.yu@uc.edu", role = c("aut","ctb"))
   )
 Description: To provide a comprehensive analysis of high dimensional data sets
-    with a longitudinal response, we propose this package to accomendate provide 
+    with a longitudinal response, we propose this package to accommodate provide 
     any combination of 1) simultaneous variable selection and estimation for high 
     and even ultra-high dimensional data, 2) conditional quantile or mean regression, 
     and 3) longitudinal or cross-sectional data analysis via computationally 
