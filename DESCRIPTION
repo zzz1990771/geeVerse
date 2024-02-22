@@ -1,7 +1,7 @@
 Package: geeVerse
 Type: Package
 Title: Longitudinal/Non-longitudinal Mean/Quantile Regression with Generalized
-    Estimating Equations for Hign Dimensional Data
+    Estimating Equations for High-dimensional Data
 Version: 0.1.0
 Authors@R: c(
     person("Tianhai", "Zu", email = "zuti@mail.uc.edu", role = c("aut", "cre")),
