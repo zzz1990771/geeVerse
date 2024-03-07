@@ -22,7 +22,7 @@
 #' size containing the user specified correlation. Otherwise, the default value is \code{NULL}.
 #' @param scale.fix A logical variable; if true, the scale parameter is fixed at the value of \code{scale.value}.
 #' The default value is \code{TRUE}.
-#' @param scale.value If \code{scale.fix = TRUE}, this assignes a numeric value to which the scale parameter should be
+#' @param scale.value If \code{scale.fix = TRUE}, this assigns a numeric value to which the scale parameter should be
 #' fixed. The default value is 1.
 #' @param lambda A numerical value for the penalization parameter of the scad function, which is estimated via
 #' cross-validation.
@@ -41,31 +41,22 @@
 #' @examples
 #' #generate data
 #' set.seed(2021)
+#' sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
+#'                          beta0 = rep(1,7), rho = 0.6, type = "ar",
+#'                           dis = "normal", ka = 1)
 #'
-#' n=n_sub=200
-#' p=10
-#' m=5
-#' beta0=rep(1,m)
-#' p0=length(beta0)
-#' beta = c(beta0,rep(0,p-p0))
-#' id = rep(1:n, each = m)
-#' n_obs<-rep(m,n_sub);
-#'
-#' e = NULL
-#' for (i in 1:n_sub){
-#'   sigmai=Siga_cov(0.5,"ar",n_obs[i])
-#'   ei=mvtnorm::rmvnorm(1, mean=rep(0, n_obs[i]), sigma=sigmai)
-#'   e=c(e,ei);
-#' }
-#'
-#' X=matrix(rnorm(n*m*p),n*m,p)
-#' y=X%*%beta+(1+abs(X[,1]))*e
-#'
+#' X=sim_data$X
+#' y=sim_data$y
+#' id = rep(1:100, each = 10)
 #' data = data.frame(X,y,id)
 #'
 #' PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
 #' PGEE_fit$coefficients
 #' @import Rcpp
+#' @importFrom stats gaussian
+#' @importFrom stats model.extract
+#' @importFrom stats model.matrix
+#'
 #' @export
 PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian(link = "identity"),
            corstr = "independence", Mv = NULL, beta_int = NULL, R = NULL, scale.fix = TRUE,
@@ -148,7 +139,7 @@ PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian
 
     if(missing(pindex)) pindex=NULL
 
-    if(missing(family)) family=gaussian(link="identity")
+    if(missing(family)) family=stats::gaussian(link="identity")
 
     if(missing(corstr)) corstr="independence"
 
@@ -619,7 +610,7 @@ q_scad <-function(theta,lambda,a=3.7)
   lambda*(1-b1)+((lambda*a)-theta)*b2/(a-1)*b1
 }
 
-#' @export
+
 summary.PGEE <- summary.PGee <- function(object, correlation = TRUE, ...)
 {
   coef <- object$coefficients
@@ -648,7 +639,7 @@ summary.PGEE <- summary.PGee <- function(object, correlation = TRUE, ...)
   summary$call <- object$call
   summary$version <- object$version
   summary$nobs <- object$nobs
-  summary$residual.summary <- quantile(as.vector(object$residuals))
+  summary$residual.summary <- stats::quantile(as.vector(object$residuals))
   names(summary$residual.summary) <- c("Min", "1Q", "Median", "3Q", "Max")
   summary$model<- object$model
   summary$title <- object$title

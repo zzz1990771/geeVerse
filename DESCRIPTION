@@ -17,13 +17,11 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:
-    MASS,
     mvtnorm,
     quantreg,
     Rcpp (>= 0.10.2),
-    RcppEigen (>= 0.3.2.1.1),
-    methods,
     doParallel,
     foreach
+Suggests: methods
 LinkingTo: Rcpp, RcppEigen
 RoxygenNote: 7.2.3

@@ -1,6 +1,41 @@
+#' Cross-Validation for Generalized Estimating Equations (GEE)
+#'
+#' This function performs k-fold cross-validation for model selection in the context
+#' of Generalized Estimating Equations (GEE). It is designed to evaluate the performance
+#' of different models specified by a range of lambda values, choosing the one that
+#' minimizes the cross-validation criterion.
+#'
+#' @param formula an object of class \code{"formula"} (or one that can be coerced to that class):
+#' a symbolic description of the model to be fitted.
+#' @param id a vector which identifies the cluster/group for each observation.
+#' @param data an optional data frame containing the variables in the model.
+#' @param family a description of the error distribution and link function to be used in the model.
+#' @param scale.fix logical; if \code{TRUE}, the scale parameter is fixed to \code{scale.value}.
+#' @param scale.value the value of the scale parameter when \code{scale.fix} is \code{TRUE}.
+#' @param fold the number of folds to be used in the cross-validation.
+#' @param lambda.vec a vector of lambda values for which the cross-validation error will be calculated.
+#' @param pindex an optional numeric vector specifying a parameter index.
+#' @param eps the threshold for convergence criteria.
+#' @param maxiter the maximum number of iterations for the convergence of the algorithm.
+#' @param tol the tolerance level for the convergence of the algorithm.
+#'
+#' @return An object of class \code{"CVfit"}, which is a list containing:
+#' \describe{
+#'   \item{\code{fold}}{The number of folds used in the cross-validation.}
+#'   \item{\code{lam.vect}}{The vector of lambda values tested.}
+#'   \item{\code{cv.vect}}{The cross-validation error for each lambda.}
+#'   \item{\code{lam.opt}}{The lambda value that resulted in the minimum cross-validation error.}
+#'   \item{\code{cv.min}}{The minimum cross-validation error.}
+#'   \item{\code{call}}{The matched call.}
+#' }
+#'
+#' @importFrom stats gaussian
+#' @importFrom stats model.extract
+#' @importFrom stats model.matrix
+#'
 #' @export
 CVfit <-
-function(formula, id, data, family, scale.fix, scale.value, fold, 
+function(formula, id, data, family, scale.fix, scale.value, fold,
 lambda.vec, pindex, eps, maxiter, tol) {
 
 call_cv <- match.call()
@@ -38,11 +73,11 @@ nx <- dim(X)[2]
 nt <- dim(X)[1]/N
 nt <- rep(nt,N)
 
-#pay attention to this part  
+#pay attention to this part
 lam.min <- -1
 cv.min <- Inf
 cv.vect <- NULL
-         
+
 for (j in 1:length(lambda.vec))   {
 #get one of the lambda's
 lam.temp <- lambda.vec[j]
@@ -58,7 +93,7 @@ index.cv <- ((k-1)*nt[1]*(N/fold)+1):(k*nt[1]*(N/fold))
 y.train <- y[-index.cv]
 if (colnames(X)[1]== "(Intercept)") x.train <- X[-index.cv,-1] else x.train <- X[-index.cv,]
 id.train <- id[-index.cv]
-       
+
 #compute beta.train
 data.train=data.frame("id"=id.train,"y"=y.train, x.train)
 mm<-match.call(expand.dots = FALSE)
@@ -93,21 +128,21 @@ y.cv<-y[index.cv]
 x.cv<-X[index.cv,]
 id.cv<-id[index.cv]
 yy=y.cv
-eta=x.cv%*%beta.train 
+eta=x.cv%*%beta.train
 mu=family$linkinv(eta)
 ##family$dev.resids gives the square of the residuals
 cv.value<-cv.value+sum((family$dev.resids(yy,mu,wt=1)))
 } #k
-          
+
 cv.vect<-c(cv.vect, cv.value)
-           
+
 if(cv.value<cv.min) {
 lam.min<-lam.temp
 cv.min<-cv.value
 }
-      
+
 } #j
-  
+
 out<-list()
 attr(out, "class") <- c("CVfit")
 out$fold=fold
@@ -116,5 +151,5 @@ out$cv.vect=cv.vect
 out$lam.opt=lam.min
 out$cv.min=cv.min
 out$call <- call_cv
-out   
+out
 }

@@ -54,7 +54,7 @@ size containing the user specified correlation. Otherwise, the default value is 
 \item{scale.fix}{A logical variable; if true, the scale parameter is fixed at the value of \code{scale.value}.
 The default value is \code{TRUE}.}
 
-\item{scale.value}{If \code{scale.fix = TRUE}, this assignes a numeric value to which the scale parameter should be
+\item{scale.value}{If \code{scale.fix = TRUE}, this assigns a numeric value to which the scale parameter should be
 fixed. The default value is 1.}
 
 \item{lambda}{A numerical value for the penalization parameter of the scad function, which is estimated via
@@ -84,26 +84,13 @@ This function was re-wrote partly with RCPP and RCPPEigen for better computation
 \examples{
 #generate data
 set.seed(2021)
+sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
+                         beta0 = rep(1,7), rho = 0.6, type = "ar",
+                          dis = "normal", ka = 1)
 
-n=n_sub=200
-p=10
-m=5
-beta0=rep(1,m)
-p0=length(beta0)
-beta = c(beta0,rep(0,p-p0))
-id = rep(1:n, each = m)
-n_obs<-rep(m,n_sub);
-
-e = NULL
-for (i in 1:n_sub){
-  sigmai=Siga_cov(0.5,"ar",n_obs[i])
-  ei=mvtnorm::rmvnorm(1, mean=rep(0, n_obs[i]), sigma=sigmai)
-  e=c(e,ei);
-}
-
-X=matrix(rnorm(n*m*p),n*m,p)
-y=X\%*\%beta+(1+abs(X[,1]))*e
-
+X=sim_data$X
+y=sim_data$y
+id = rep(1:100, each = 10)
 data = data.frame(X,y,id)
 
 PGEE_fit = PGEE("y ~.-id-1",id = id, data = data,corstr = "exchangeable",lambda=0.01)
