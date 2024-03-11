@@ -22,7 +22,6 @@
 #' @param max_it Maximum number of iterations (default is 100).
 #' @param cutoff Threshold for coefficient shrinkage (default is 0.1).
 #' @return A list containing the following components:
-#'         \itemize{
 #'           \item{beta}{Estimated beta coefficients.}
 #'           \item{g}{Fitted values of the linear predictor.}
 #'           \item{R}{Estimated working correlation matrix.}
@@ -30,19 +29,18 @@
 #'           \item{mcl}{Mean check loss.}
 #'           \item{hbic}{Hannan-Quinn Information Criterion value.}
 #'           \item{converge}{Boolean indicating whether the algorithm converged.}
-#'         }
 #' @examples
 #' # Example usage:
 #'
-#' sim_data <- generateData(n_sub = 50, n_obs = rep(10, 50),  p = 50,
-#'                          beta0 = rep(1,7), rho = 0.6, type = "ar",
+#' sim_data <- generateData(n_sub = 20, n_obs = rep(10, 20),  p = 20,
+#'                          beta0 = rep(1,5), rho = 0.1, type = "ar",
 #'                           dis = "normal", ka = 1)
 #'
 #' X=sim_data$X
 #' y=sim_data$y
 #'
 #' #fit qpgee with auto selected lambda
-#' qpgee.fit = qpgee_tune(X,y,tau=0.5,nk=rep(10, 50),ncore=1)
+#' qpgee.fit = qpgee_tune(X,y,tau=0.5,nk=rep(10, 20),ncore=1)
 #' qpgee.fit$beta
 #'
 #' @export

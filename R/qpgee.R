@@ -19,7 +19,6 @@
 #' @param max_it Maximum number of iterations (default is 100).
 #' @param cutoff Threshold for coefficient shrinkage (default is 0.1).
 #' @return A list containing the following components:
-#'         \itemize{
 #'           \item{beta}{Estimated beta coefficients.}
 #'           \item{g}{Fitted values of the linear predictor.}
 #'           \item{R}{Estimated working correlation matrix.}
@@ -27,7 +26,6 @@
 #'           \item{mcl}{Mean check loss.}
 #'           \item{hbic}{Hannan-Quinn Information Criterion value.}
 #'           \item{converge}{Boolean indicating whether the algorithm converged.}
-#'         }
 #' @examples
 #' # Example usage:
 #' sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
@@ -293,14 +291,42 @@ qpgee <-function(x, y,
 
 }
 
-#need further work on this
+#' Predict method for qpgee model objects
+#'
+#' This function makes predictions from a "qpgee" model object. When `newdata` is not provided,
+#' it returns predictions using the original data the model was fitted on. If `newdata` is supplied
+#' (through `...`), it uses this new data for prediction.
+#'
+#' @param object A "qpgee" model object.
+#' @param ... Additional arguments to the function. Can include `newdata`, a dataframe
+#'    containing the new data to predict on. The structure of `newdata` should match that of the data
+#'    the model was originally fitted with, specifically in terms of the variables it contains.
+#'    Additional arguments are ignored.
+#'
+#' @return If `newdata` is not supplied, returns a vector of predictions based on the fitted values
+#'    and handling of NAs specified in the model object. If `newdata` is supplied, returns a vector
+#'    of predictions for the new data.
+#' @examples
+#' # Example usage:
+#' sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
+#'                          beta0 = rep(1,7), rho = 0.6, type = "ar",
+#'                           dis = "normal", ka = 1)
+#'
+#' X=sim_data$X
+#' y=sim_data$y
+#'
+#' #fit qpgee
+#' qpgee.fit = qpgee(X,y,tau=0.5,nk=rep(10, 100))
+#' predict(qpgee.fit)
+#'
 #' @export
-predict.qpgee <- function (object, newdata)
+predict.qpgee <- function (object, ...)
 {
-  if (missing(newdata)) {
+  args <- list(...)
+  if (!"newdata" %in% names(args)) {
     return(stats::napredict(object$na.action, object$fitted))
   } else {
-    X <- newdata
+    X <- args[["newdata"]]
   }
   pred <- drop(X %*% object$beta)
   pred

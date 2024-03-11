@@ -67,15 +67,15 @@ of lambdas, and select the best level of penalty with high-dimensional BIC
 \examples{
 # Example usage:
 
-sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
-                         beta0 = rep(1,7), rho = 0.6, type = "ar",
+sim_data <- generateData(n_sub = 20, n_obs = rep(10, 20),  p = 20,
+                         beta0 = rep(1,5), rho = 0.1, type = "ar",
                           dis = "normal", ka = 1)
 
 X=sim_data$X
 y=sim_data$y
 
 #fit qpgee with auto selected lambda
-qpgee.fit = qpgee_tune(X,y,tau=0.5,nk=rep(10, 100),ncore=1)
+qpgee.fit = qpgee_tune(X,y,tau=0.5,nk=rep(10, 20),ncore=1)
 qpgee.fit$beta
 
 }
