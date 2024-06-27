@@ -422,7 +422,7 @@ qpgee <-
       ))
     }
 
-    if(length(lambda) >= 1){
+    if(length(lambda) >= 2){
       if (method == "HBIC"){
         if (ncore == 1) {
           l = lambda

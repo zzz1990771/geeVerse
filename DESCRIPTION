@@ -17,6 +17,7 @@ Description: To provide a comprehensive analysis of high dimensional longitudina
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 3.5.0)
 Imports:
     mvtnorm,
     quantreg,
