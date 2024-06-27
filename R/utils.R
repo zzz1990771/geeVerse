@@ -40,7 +40,7 @@ pp_scad_sim <- function(z,lambda_si,lambda_pl=0,a=3.7) {
 #' @export
 Siga_cov<-function(rho,type,nt){
   sigma=matrix(0,nt,nt)
-  if (type=="cs"){
+  if (type=="cs" || type=="ex" ){
     sigma=(1-rho)*diag(nt)+rho*matrix(1,nt,nt)
   }else if (type=="ar"){
     for (i in 1:nt)

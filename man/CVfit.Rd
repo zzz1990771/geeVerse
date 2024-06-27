@@ -16,7 +16,8 @@ CVfit(
   pindex,
   eps,
   maxiter,
-  tol
+  tol,
+  ncore = 1
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ a symbolic description of the model to be fitted.}
 \item{maxiter}{the maximum number of iterations for the convergence of the algorithm.}
 
 \item{tol}{the tolerance level for the convergence of the algorithm.}
+
+\item{ncore}{if greater than 1, the function will use parallel computation.}
 }
 \value{
 An object of class \code{"CVfit"}, which is a list containing:
@@ -61,4 +64,7 @@ This function performs k-fold cross-validation for model selection in the contex
 of Generalized Estimating Equations (GEE). It is designed to evaluate the performance
 of different models specified by a range of lambda values, choosing the one that
 minimizes the cross-validation criterion.
+}
+\details{
+Note that this is a re-implemented version with parallel computing.
 }

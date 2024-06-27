@@ -2,17 +2,20 @@
 % Please edit documentation in R/qpgee.R
 \name{qpgee}
 \alias{qpgee}
-\title{Quantile Penalized Generalized Estimating Equations (QPGEE)}
+\title{Quantile Penalized Generalized Estimating Equations with Auto Selected Penalty level}
 \usage{
 qpgee(
   x,
   y,
   tau = 0.5,
+  method = "HBIC",
+  ncore = 1,
   nk = rep(1, length(y)),
-  worktype = "CS",
-  lambda = 0.1,
-  betaint = NULL,
+  worktype = "exchangeable",
+  lambda = NULL,
+  intercept = FALSE,
   f0 = NULL,
+  betaint = NULL,
   max_it = 100,
   cutoff = 10^-1
 )
@@ -24,18 +27,26 @@ qpgee(
 
 \item{tau}{The quantile to be estimated (default is 0.5, the median).}
 
+\item{method}{The criterion to select level of penalty. Currently it only
+supports "HBIC".}
+
+\item{ncore}{A numeric value specifying how many core to use.}
+
 \item{nk}{A numeric vector indicating the number of observations per subject.}
 
 \item{worktype}{A string specifying the working correlation structure.
-Options include "CS" (Compound Symmetry), "AR" (Autoregressive),
-"Tri" (Tri-diagonal), and "Ind" (Independent).}
+Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
+"Tri" (Tri-diagonal), and "exchangeable" (Independent).}
 
-\item{lambda}{The penalty parameter for regularization (default is 0.1).}
+\item{lambda}{A vector of penalty parameter for regularization. If not provided,
+a grid will be provided by this function.}
+
+\item{intercept}{Whether to include an intercept when estimating.}
+
+\item{f0}{estimated conditional error distributions.}
 
 \item{betaint}{Initial values for the beta coefficients. If NULL,
 non-longitudinal quantile regression is used for initialization.}
-
-\item{f0}{estimated conditional error distributions.}
 
 \item{max_it}{Maximum number of iterations (default is 100).}
 
@@ -52,22 +63,22 @@ A list containing the following components:
           \item{converge}{Boolean indicating whether the algorithm converged.}
 }
 \description{
-This function implements Quantile Penalized Generalized Estimating Equations
-(QPGEE) for longitudinal data analysis. It estimates parameters using a
-penalized quantile regression approach within a GEE framework, allowing for
-different working correlation structures.
+This function automatically select the penalty level by going through a list
+of lambdas, and select the best level of penalty with high-dimensional BIC
+(HBIC) or cross-validation (CV).
 }
 \examples{
 # Example usage:
-sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
-                         beta0 = rep(1,7), rho = 0.6, type = "ar",
+
+sim_data <- generateData(n_sub = 20, n_obs = rep(10, 20),  p = 20,
+                         beta0 = rep(1,5), rho = 0.1, type = "ar",
                           dis = "normal", ka = 1)
 
 X=sim_data$X
 y=sim_data$y
 
-#fit qpgee
-qpgee.fit = qpgee(X,y,tau=0.5,nk=rep(10, 100))
+#fit qpgee with auto selected lambda
+qpgee.fit = qpgee(X,y,tau=0.5,nk=rep(10, 20),ncore=1)
 qpgee.fit$beta
 
 }
