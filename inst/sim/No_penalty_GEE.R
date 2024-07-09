@@ -58,7 +58,7 @@ for(tau in tau_list){
       #Apply proposed method with hbic tuning
       for(structure in c("Ind","CS","AR")){
         PQGEE_results[[structure]][[sim]] <-  qpgee(x,y,tau = tau, betaint = betaint,nk = nk,
-                                                    worktype = structure,lambda = 0, cutoff = 0.01)
+                                                    correlation = structure,lambda = 0, cutoff = 0.01)
       }
 
 

@@ -18,7 +18,7 @@
 #'                          beta0 = rep(1,7), rho = 0.6, type = "ar",
 #'                           dis = "normal", ka = 1)
 #' @export
-generateData <- function(n_sub, n_obs, p, beta0, rho, type = "ar", dis = "normal" , ka) {
+generateData <- function(n_sub, n_obs, p, beta0, rho, type = "ar", dis = "normal" , ka = 0) {
   p0 <- length(beta0)
   beta <- c(beta0, rep(0, p - p0))
   e <- NULL

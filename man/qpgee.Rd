@@ -11,7 +11,7 @@ qpgee(
   method = "HBIC",
   ncore = 1,
   nk = rep(1, length(y)),
-  worktype = "exchangeable",
+  correlation = "exchangeable",
   lambda = NULL,
   intercept = FALSE,
   f0 = NULL,
@@ -34,7 +34,7 @@ supports "HBIC".}
 
 \item{nk}{A numeric vector indicating the number of observations per subject.}
 
-\item{worktype}{A string specifying the working correlation structure.
+\item{correlation}{A string specifying the working correlation structure.
 Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
 "Tri" (Tri-diagonal), and "exchangeable" (Independent).}
 

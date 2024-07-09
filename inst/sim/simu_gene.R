@@ -97,7 +97,7 @@ for(tau in tau_list){
         PQGEE_results[[structure]][[sim]] <-  qpgee_tune(x,y,tau=tau,method="HBIC",
                                                          betaint=betaint,nk=nk,
                                                          #lambda=exp(seq(log(1),log(0.01),length.out=30)),
-                                                         worktype=structure,ncore = 10)
+                                                         correlation=structure,ncore = 10)
       }
       sim = sim + 1
     #})

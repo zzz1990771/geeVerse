@@ -89,7 +89,7 @@ for(tau in tau_list){
         PQGEE_results[[structure]][[sim]] <-  qpgee_tune(x,y,tau=tau,method="HBIC",
                                                          betaint=betaint,nk=nk,cutoff = 0.05,
                                                          intercept = TRUE,
-                                                         worktype=structure,ncore = 18)
+                                                         correlation=structure,ncore = 18)
         #remove intercept from beta for compiling the results
         PQGEE_results[[structure]][[sim]]$beta = PQGEE_results[[structure]][[sim]]$beta[-1]
       }

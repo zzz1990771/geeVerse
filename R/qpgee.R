@@ -9,7 +9,7 @@
 #' @param y A numeric vector of response variables.
 #' @param tau The quantile to be estimated (default is 0.5, the median).
 #' @param nk A numeric vector indicating the number of observations per subject.
-#' @param worktype A string specifying the working correlation structure.
+#' @param correlation A string specifying the working correlation structure.
 #'        Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
 #'        "Tri" (Tri-diagonal), and "independence" (Independent).
 #' @param lambda The penalty parameter for regularization (default is 0.1).
@@ -48,7 +48,7 @@
 qpgee.est <-function(x, y,
                  tau = 0.5,
                  nk = rep(1, length(y)),
-                 worktype = "exchangeable",
+                 correlation = "exchangeable",
                  lambda = 0.1,
                  intercept = FALSE,
                  betaint = NULL,
@@ -123,12 +123,12 @@ qpgee.est <-function(x, y,
     ######## used to calculate the correlation matrix
     sd_resid = resid / sqrt(tau - tau ^ 2) ##########standard the resid
 
-    if (worktype == "exchangeable") {
+    if (correlation == "exchangeable") {
       Ns = sum(nk * (nk - 1))
-    } else if (worktype == "AR1") {
+    } else if (correlation == "AR1") {
       Ns = sum(nk - 1)
       Ns1 = sum(nk - 2)
-    } else if (worktype == "Tri") {
+    } else if (correlation == "Tri") {
       Ns = sum(nk - 1)
       Ns1 = sum(nk - 2)
     } else{
@@ -141,20 +141,20 @@ qpgee.est <-function(x, y,
     for (i in 1:nsub) {
       if (nk[i] >= 2) {
         za = sd_resid[(cn[i] + 1):cn[i + 1]]
-        if (worktype == "exchangeable") {
+        if (correlation == "exchangeable") {
           for (j in 1:nk[i]) {
             for (k in 1:nk[i]) {
               if (k != j)
                 sumrd = sumrd + za[j] * za[k]
             }
           }
-        } else if (worktype == "AR1") {
+        } else if (correlation == "AR1") {
           for (j in 2:nk[i]) {
             sumrd = sumrd + za[j] * za[j - 1]
             if (j >= 3)
               sumrd1 = sumrd1 + za[j] * za[j - 2]
           }
-        } else if (worktype == "Tri") {
+        } else if (correlation == "Tri") {
           for (j in 2:nk[i])
             sumrd = sumrd + za[j] * za[j - 1]
         } else{
@@ -168,7 +168,7 @@ qpgee.est <-function(x, y,
       }
     }
 
-    if (worktype == "exchangeable") {
+    if (correlation == "exchangeable") {
       af = sumrd / Ns
       R = diag(max(nk))
       for (i in 1:max(nk)) {
@@ -177,7 +177,7 @@ qpgee.est <-function(x, y,
             R[i, j] = af
         }
       }
-    } else if (worktype == "AR1") {
+    } else if (correlation == "AR1") {
       #af=(sumrd/Ns+sqrt(max(sumrd1,0))/Ns1)/2;R=diag(max(nk))
       af = sumrd / Ns
       R = diag(max(nk))
@@ -186,7 +186,7 @@ qpgee.est <-function(x, y,
           R[i, j] = af ^ (abs(i - j))
         }
       }
-    } else if (worktype == "Tri") {
+    } else if (correlation == "Tri") {
       af = (sumrd / Ns + sqrt(sumrd1) / Ns1) / 2
 
       R = diag(max(nk))
@@ -196,7 +196,7 @@ qpgee.est <-function(x, y,
             R[i, j] = af ^ (abs(i - j))
         }
       }
-    } else if (worktype == "independence") {
+    } else if (correlation == "independence") {
       R = diag(max(nk))
     } else{
       R = R / (nsub - nx)
@@ -360,7 +360,7 @@ predict.qpgee <- function (object, ...)
 #'        supports "HBIC".
 #' @param ncore A numeric value specifying how many core to use.
 #' @param nk A numeric vector indicating the number of observations per subject.
-#' @param worktype A string specifying the working correlation structure.
+#' @param correlation A string specifying the working correlation structure.
 #'        Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
 #'        "Tri" (Tri-diagonal), and "exchangeable" (Independent).
 #' @param lambda A vector of penalty parameter for regularization. If not provided,
@@ -403,7 +403,7 @@ qpgee <-
            method = "HBIC",
            ncore = 1,
            nk = rep(1, length(y)),
-           worktype = "exchangeable",
+           correlation = "exchangeable",
            lambda = NULL,
            intercept = FALSE,
            f0 = NULL,
@@ -434,9 +434,9 @@ qpgee <-
                                            result$X_selected = "None"
 
                                            try({result <-qpgee.est(x, y, tau,
-                                                                   nk, worktype,
+                                                                   nk, correlation,
                                                                    l, intercept, betaint,
-                                                                   f0, max_it, cutoff)})
+                                                                   f0, max_it, cutoff)}, silent = TRUE)
                                            c(l, result$mcl, result$hbic,
                                              paste0(result$X_selected, collapse = ""))
                                          }
@@ -451,9 +451,9 @@ qpgee <-
                                            result$X_selected = "None"
 
                                            try({result <-qpgee.est(x, y, tau,
-                                                                   nk, worktype,
+                                                                   nk, correlation,
                                                                    l, intercept, betaint, f0,
-                                                                   max_it, cutoff)})
+                                                                   max_it, cutoff)}, silent = TRUE)
                                            c(l, result$mcl, result$hbic,
                                              paste0(result$X_selected, collapse = ""))
                                          }
@@ -512,7 +512,7 @@ qpgee <-
 
                                                # Fit the model on the training set
                                                result <-qpgee.est(train_x, train_y, tau,
-                                                                  train_nk, worktype,
+                                                                  train_nk, correlation,
                                                                   l, intercept, betaint, f0,
                                                                   max_it, cutoff)
 
@@ -527,7 +527,7 @@ qpgee <-
 
                                              }
                                              result$mean_mcl = mean(unlist(results))
-                                           })
+                                           }, silent = TRUE)
                                            c(l, result$mcl, result$mean_mcl,
                                              paste0(result$X_selected, collapse = ""))
 
@@ -539,14 +539,59 @@ qpgee <-
                                          .packages = c("MASS","geeVerse")) %dopar% {
                                            result=list()
                                            result$mcl = 1000
-                                           result$hbic = 1000000
+                                           result$mean_mcl = 1000
                                            result$X_selected = "None"
 
-                                           try({result <-qpgee.est(x, y, tau,
-                                                                   nk, worktype,
-                                                                   l, intercept, betaint, f0,
-                                                                   max_it, cutoff)})
-                                           c(l, result$mcl, result$hbic,
+                                           try({
+                                             subject_id <- rep(1:length(nk), times=nk)
+                                             nfold = 5
+
+                                             subject_ids = length(nk)
+                                             subject_ids <- sample(subject_ids)
+
+                                             # Assign subjects to folds
+                                             num_subjects <- length(subject_ids)
+                                             subjects_per_fold <- ceiling(num_subjects / nfold)
+                                             fold_assignments <- rep(1:5, each=subjects_per_fold)[1:num_subjects]
+
+                                             # Initialize a list to store results for each fold
+                                             results <- vector("list", 5)
+
+
+
+                                             for(fold in 1:nfold){
+                                               # Identify subjects in the current fold
+                                               test_subjects <- subject_ids[fold_assignments == fold]
+
+                                               # Split data into training and testing based on subjects
+                                               test_nk = nk[test_subjects]
+                                               train_nk = nk[-test_subjects]
+
+                                               test_x <- x[subject_id %in% test_subjects, ]
+                                               train_x <- x[!subject_id %in% test_subjects, ]
+
+                                               test_y <- y[subject_id %in% test_subjects]
+                                               train_y <- y[!subject_id %in% test_subjects]
+
+                                               # Fit the model on the training set
+                                               result <-qpgee.est(train_x, train_y, tau,
+                                                                  train_nk, correlation,
+                                                                  l, intercept, betaint, f0,
+                                                                  max_it, cutoff)
+
+                                               # Predict on the testing set
+                                               predictions <- predict.qpgee(result,newdata = test_x)
+
+                                               # Calculate performance metric, e.g., Mean Squared Error (MSE)
+                                               mcl <- mean(check_loss(predictions - test_y, tau))
+
+                                               # Store the result
+                                               results[[fold]] <- mcl
+
+                                             }
+                                             result$mean_mcl = mean(unlist(results))
+                                           }, silent = TRUE)
+                                           c(l, result$mcl, result$mean_mcl,
                                              paste0(result$X_selected, collapse = ""))
                                          }
           parallel::stopCluster(cl)
@@ -564,13 +609,13 @@ qpgee <-
         #print(best_lambda)
       }
       fit = qpgee.est(x, y, tau,
-                      nk, worktype,
+                      nk, correlation,
                       best_lambda, intercept, betaint, f0,
                       max_it, cutoff)
       fit$best_lambda = best_lambda
     }else if (length(lambda) == 1){
       fit = qpgee.est(x, y, tau,
-                      nk, worktype,
+                      nk, correlation,
                       lambda, intercept, betaint, f0,
                       max_it, cutoff)
       fit$best_lambda = lambda

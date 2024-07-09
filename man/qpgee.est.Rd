@@ -9,7 +9,7 @@ qpgee.est(
   y,
   tau = 0.5,
   nk = rep(1, length(y)),
-  worktype = "exchangeable",
+  correlation = "exchangeable",
   lambda = 0.1,
   intercept = FALSE,
   betaint = NULL,
@@ -27,7 +27,7 @@ qpgee.est(
 
 \item{nk}{A numeric vector indicating the number of observations per subject.}
 
-\item{worktype}{A string specifying the working correlation structure.
+\item{correlation}{A string specifying the working correlation structure.
 Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
 "Tri" (Tri-diagonal), and "independence" (Independent).}
 
