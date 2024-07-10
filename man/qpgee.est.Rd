@@ -8,7 +8,7 @@ qpgee.est(
   x,
   y,
   tau = 0.5,
-  nk = rep(1, length(y)),
+  nobs = rep(1, length(y)),
   correlation = "exchangeable",
   lambda = 0.1,
   intercept = FALSE,
@@ -25,7 +25,7 @@ qpgee.est(
 
 \item{tau}{The quantile to be estimated (default is 0.5, the median).}
 
-\item{nk}{A numeric vector indicating the number of observations per subject.}
+\item{nobs}{A numeric vector indicating the number of observations per subject.}
 
 \item{correlation}{A string specifying the working correlation structure.
 Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
@@ -70,7 +70,7 @@ X=sim_data$X
 y=sim_data$y
 
 #fit qpgee
-qpgee.fit = qpgee.est(X,y,tau=0.5,nk=rep(10, 100))
+qpgee.fit = qpgee.est(X,y,tau=0.5,nobs=rep(10, 100))
 qpgee.fit$beta
 
 }

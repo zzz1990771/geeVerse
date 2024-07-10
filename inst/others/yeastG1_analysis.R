@@ -1,5 +1,5 @@
+library(geeVerse)
 library(quantreg)
-
 data("yeastG1")
 n_obs=4
 n_sub<-nrow(yeastG1)/n_obs
@@ -12,13 +12,16 @@ y=as.matrix(yeastG1$y)
 betaint=coefficients(rq(y~0+x,tau = 0.9))
 
 #Apply proposed method with hbic tuning with tau = 0.9
-PQGEE_results_high <-  qpgee_tune(cbind(1,x), y, nk = rep(n_obs,n_sub), correlation = "Ind",
+PQGEE_results_median <-  qpgee(x, y, nobs = rep(n_obs,n_sub),
+                               + correlation  = "Ind", tau=0.5 , intercept = TRUE, method = "HBIC", cutoff = 10^-4)
+
+PQGEE_results_high <-  qpgee_tune(cbind(1,x), y, nobs = rep(n_obs,n_sub), correlation = "Ind",
                                   tau=0.9 ,method = "HBIC",cutoff = 10^-4,ncore = 10)
 predictors[PQGEE_results_high$X_selected]
 
 
 #Apply proposed method with hbic tuning with tau = 0.5
-PQGEE_results_median <-  qpgee_tune(cbind(1,x), y, nk = rep(n_obs,n_sub), correlation = "Ind",
+PQGEE_results_median <-  qpgee_tune(cbind(1,x), y, nobs = rep(n_obs,n_sub), correlation = "Ind",
                              tau=0.5 ,method = "HBIC",cutoff = 10^-4,ncore = 10)
 predictors[PQGEE_results_median$X_selected]
 

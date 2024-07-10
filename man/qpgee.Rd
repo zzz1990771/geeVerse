@@ -10,7 +10,7 @@ qpgee(
   tau = 0.5,
   method = "HBIC",
   ncore = 1,
-  nk = rep(1, length(y)),
+  nobs = rep(1, length(y)),
   correlation = "exchangeable",
   lambda = NULL,
   intercept = FALSE,
@@ -32,7 +32,7 @@ supports "HBIC".}
 
 \item{ncore}{A numeric value specifying how many core to use.}
 
-\item{nk}{A numeric vector indicating the number of observations per subject.}
+\item{nobs}{A numeric vector indicating the number of observations per subject.}
 
 \item{correlation}{A string specifying the working correlation structure.
 Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
@@ -78,7 +78,7 @@ X=sim_data$X
 y=sim_data$y
 
 #fit qpgee with auto selected lambda
-qpgee.fit = qpgee(X,y,tau=0.5,nk=rep(10, 20),ncore=1)
+qpgee.fit = qpgee(X,y,tau=0.5,nobs=rep(10, 20),ncore=1)
 qpgee.fit$beta
 
 }

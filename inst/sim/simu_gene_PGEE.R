@@ -62,7 +62,7 @@ for(tau in tau_list){
 
       #generate y and X
       N=sum(n_obs)
-      nk=n_obs
+      nobs=n_obs
       cn = c(0, cumsum(n_obs))
       X_phone1 = matrix(rnorm(n*25),n*5,5)
       X_phone2 = matrix(rnorm(n*5*(p/2-5)),n*5,p/2-5)

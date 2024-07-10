@@ -62,7 +62,7 @@ for(tau in tau_list){
 
       #generate y and X
       N=sum(n_obs)
-      nk=n_obs
+      nobs=n_obs
       cn = c(0, cumsum(n_obs))
       X_phone1 = matrix(rnorm(n*25),n*5,5)
       #X_phone2 = matrix(rnorm(n*2500),n*5,500)
@@ -95,7 +95,7 @@ for(tau in tau_list){
       #Apply proposed method with hbic tuning
       for(structure in c("Ind","CS","AR")){
         PQGEE_results[[structure]][[sim]] <-  qpgee_tune(x,y,tau=tau,method="HBIC",
-                                                         betaint=betaint,nk=nk,
+                                                         betaint=betaint,nobs=nobs,
                                                          #lambda=exp(seq(log(1),log(0.01),length.out=30)),
                                                          correlation=structure,ncore = 10)
       }

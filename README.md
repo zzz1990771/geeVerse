@@ -56,18 +56,17 @@ for (i in 1:n_sub){
 
 #generate y and X
 N=sum(n_obs)
-nk=n_obs
 cn = c(0, cumsum(n_obs))
 x=X=matrix(rnorm(N*p),N,p)
 y=X%*%beta+(1+ka*abs(X[,1]))*e
 
 #fit qpgee with predefined lambda
-qpgee.fit = qpgee(x,y,tau=0.5,nk=n_obs,lambda=0.1)
+qpgee.fit = qpgee(x,y,tau=0.5,nobs=n_obs,lambda=0.1)
 qpgee.fit$beta
 
 #fit qpgee with auto selected lambda with parallel computing
 #just provide no lambda
-qpgee.fit = qpgee(x,y,tau=0.5,nk=n_obs,ncore=10)
+qpgee.fit = qpgee(x,y,tau=0.5,nobs=n_obs,ncore=10)
 qpgee.fit$beta
 qpgee.fit$best_lambda
 ```

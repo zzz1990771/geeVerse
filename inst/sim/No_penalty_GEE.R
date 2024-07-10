@@ -47,7 +47,7 @@ for(tau in tau_list){
 
     #generate y and X
     N=sum(n_obs)
-    nk=n_obs
+    nobs=n_obs
     cn = c(0, cumsum(n_obs))
     x=X=matrix(rnorm(N*p),N,p)
     y=X%*%beta+(1+ka*abs(X[,1]))*e
@@ -57,7 +57,7 @@ for(tau in tau_list){
 
       #Apply proposed method with hbic tuning
       for(structure in c("Ind","CS","AR")){
-        PQGEE_results[[structure]][[sim]] <-  qpgee(x,y,tau = tau, betaint = betaint,nk = nk,
+        PQGEE_results[[structure]][[sim]] <-  qpgee(x,y,tau = tau, betaint = betaint,nobs = nobs,
                                                     correlation = structure,lambda = 0, cutoff = 0.01)
       }
 

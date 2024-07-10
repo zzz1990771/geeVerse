@@ -29,13 +29,13 @@ for (i in 1:100) {
 
   #generate y and X
   N=sum(n_obs)
-  nk=n_obs
+  nobs=n_obs
   cn = c(0, cumsum(n_obs))
   x=X=matrix(rnorm(N*p),N,p)
   y=X%*%beta+(1+ka*abs(X[,1]))*e
 
   #fit qpgee
-  qpgee_time = system.time(qpgee_fit <- qpgee(x,y,tau=0.5,nk=n_obs))[3]
+  qpgee_time = system.time(qpgee_fit <- qpgee(x,y,tau=0.5,nobs=n_obs))[3]
   qpgee_tvec = c(qpgee_tvec,qpgee_time)
 
   #fit own pgee
@@ -94,13 +94,13 @@ for (i in 1:50) {
 
   #generate y and X
   N=sum(n_obs)
-  nk=n_obs
+  nobs=n_obs
   cn = c(0, cumsum(n_obs))
   x=X=matrix(rnorm(N*p),N,p)
   y=X%*%beta+(1+ka*abs(X[,1]))*e
 
   #fit qpgee
-  qpgee_time = system.time(qpgee_fit <- qpgee(x,y,tau=0.5,nk=n_obs))[3]
+  qpgee_time = system.time(qpgee_fit <- qpgee(x,y,tau=0.5,nobs=n_obs))[3]
   qpgee_tvec = c(qpgee_tvec,qpgee_time)
 
   #fit own pgee
