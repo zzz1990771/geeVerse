@@ -15,17 +15,17 @@ X_snp = readRDS("./chr22_hapgen2_data1.RDS")[,1:25]
 X_snp = X_snp
 dim(unique(t(X_snp)))
 #settings
-n=n_sub=1000
+n=nsub=1000
 p=50
 beta0=rep(1,9)
 beta0=c(rep(1,5),rep(1,4))
 p0=length(beta0)
 beta = c(beta0,rep(0,p-p0))
-n_obs<-rep(5,n_sub);
+nobs<-rep(5,nsub);
 
 ka = 1
 rho=0.5
-type="ar"
+correlation="AR1"
 dis="normal"
 n_sim = 200
 #Please note that n_sim=2 is just for quick demo
@@ -52,18 +52,18 @@ for(tau in tau_list){
       #generate errors for each subject
       e = NULL
       id<-NULL
-      for (i in 1:n_sub){
-        id<-c(id,rep(i,n_obs[i]))
-        sigmai=Siga_cov(rho,type,n_obs[i])
-        if (dis=="normal") ei=mvtnorm::rmvnorm(1, mean=rep(0, n_obs[i]), sigma=sigmai)
-        if (dis=="t") ei=mvtnorm::rmvt(1, sigmai, df = 4, delta = rep(0, n_obs[i]))
+      for (i in 1:nsub){
+        id<-c(id,rep(i,nobs[i]))
+        sigmai=Siga_cov(rho,correlation,nobs[i])
+        if (dis=="normal") ei=mvtnorm::rmvnorm(1, mean=rep(0, nobs[i]), sigma=sigmai)
+        if (dis=="t") ei=mvtnorm::rmvt(1, sigmai, df = 4, delta = rep(0, nobs[i]))
         e=c(e,ei);
       }
 
       #generate y and X
-      N=sum(n_obs)
-      nobs=n_obs
-      cn = c(0, cumsum(n_obs))
+      N=sum(nobs)
+      nobs=nobs
+      cn = c(0, cumsum(nobs))
       X_phone1 = matrix(rnorm(n*25),n*5,5)
       X_phone2 = matrix(rnorm(n*5*(p/2-5)),n*5,p/2-5)
       x= X = cbind(X_phone1,X_snp_lon,X_phone2)
@@ -92,7 +92,7 @@ for(tau in tau_list){
       #non-longitudinal quantile regression as initial
       betaint=coefficients(quantreg::rq(y~0+x,tau = tau))
 
-      id = rep(1:n_sub, each = 5)
+      id = rep(1:nsub, each = 5)
       data = data.frame(x,y,id)
 
       lambda.vec <- seq(0.01,1,0.1)

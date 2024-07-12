@@ -4,16 +4,16 @@
 \alias{Siga_cov}
 \title{Generate Covariance Matrix}
 \usage{
-Siga_cov(rho, type, nt)
+Siga_cov(rho, correlation, nt)
 }
 \arguments{
 \item{rho}{Numeric, the correlation coefficient used for generating the covariance matrix.
 For "cs", it represents the common correlation between any two observations.
-For "ar", it represents the correlation between two consecutive observations,
+For "AR1", it represents the correlation between two consecutive observations,
 with the correlation decreasing for observations further apart.}
 
-\item{type}{Character, specifies the type of correlation structure for the covariance matrix.
-Options are "cs" for compound symmetry, "ar" for autoregressive, and any other input
+\item{correlation}{Character, specifies the correlation of correlation structure for the covariance matrix.
+Options are "cs" for compound symmetry, "AR1" for autoregressive, and any other input
 will result in an identity matrix.}
 
 \item{nt}{Integer, the dimension of the square covariance matrix (number of time points or observations).}
@@ -24,5 +24,5 @@ A square matrix of dimension `nt` representing the specified covariance structur
 \description{
 This function generates a covariance matrix based on the specified correlation structure.
 The function supports "compound symmetry" (cs) and "autoregressive" (ar) correlation structures,
-as well as an identity matrix as the default option when neither "cs" nor "ar" is specified.
+as well as an identity matrix as the default option when neither "cs" nor "AR1" is specified.
 }

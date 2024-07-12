@@ -4,12 +4,12 @@
 \alias{generateData}
 \title{Generate Data for Simulation}
 \usage{
-generateData(n_sub, n_obs, p, beta0, rho, type = "ar", dis = "normal", ka)
+generateData(nsub, nobs, p, beta0, rho, correlation = "AR1", dis = "normal", ka)
 }
 \arguments{
-\item{n_sub}{Integer, the number of subjects.}
+\item{nsub}{Integer, the number of subjects.}
 
-\item{n_obs}{Integer or numeric vector, the number of observations per subject.}
+\item{nobs}{Integer or numeric vector, the number of observations per subject.}
 
 \item{p}{Integer, the number of predictors.}
 
@@ -17,7 +17,7 @@ generateData(n_sub, n_obs, p, beta0, rho, type = "ar", dis = "normal", ka)
 
 \item{rho}{Numeric, the correlation coefficient used in generating correlated errors.}
 
-\item{type}{Character, the type of correlation structure (default is autoregressive).}
+\item{correlation}{Character, the correlation of correlation structure (default is autoregressive).}
 
 \item{dis}{Character, the distribution of errors ("normal" or "t").}
 
@@ -32,7 +32,7 @@ based on the specified parameters. The function allows for the simulation of dat
 of correlation, distribution, and the number of observations and subjects.
 }
 \examples{
-sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 200,
-                         beta0 = rep(1,7), rho = 0.6, type = "ar",
+sim_data <- generateData(nsub = 100, nobs = rep(10, 100),  p = 200,
+                         beta0 = c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
                           dis = "normal", ka = 1)
 }

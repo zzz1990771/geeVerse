@@ -11,9 +11,9 @@
 #' \code{variance} functions. Families supported in \code{PGEE} are \code{binomial}, \code{gaussian}, \code{gamma} and
 #' \code{poisson}. The \code{links}, which are not available in \code{gee}, is not available here. The default family
 #' is \code{gaussian}.
-#' @param corstr A character string, which specifies the type of correlation structure.
+#' @param corstr A character string, which specifies the correlation of correlation structure.
 #' Structures supported in \code{PGEE} are \code{"AR-1"},\code{"exchangeable"}, \code{"fixed"}, \code{"independence"},
-#' \code{"stat_M_dep"},\code{"non_stat_M_dep"}, and \code{"unstructured"}. The default \code{corstr} type is
+#' \code{"stat_M_dep"},\code{"non_stat_M_dep"}, and \code{"unstructured"}. The default \code{corstr} correlation is
 #' \code{"independence"}.
 #' @param Mv If either \code{"stat_M_dep"}, or \code{"non_stat_M_dep"} is specified in \code{corstr}, then this
 #' assigns a numeric value for \code{Mv}. Otherwise, the default value is \code{NULL}.
@@ -41,8 +41,8 @@
 #' @examples
 #' #generate data
 #' set.seed(2021)
-#' sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
-#'                          beta0 = rep(1,7), rho = 0.6, type = "ar",
+#' sim_data <- generateData(nsub = 100, nobs = rep(10, 100),  p = 100,
+#'                          c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
 #'                           dis = "normal", ka = 1)
 #'
 #' X=sim_data$X
@@ -257,6 +257,10 @@ PGEE<-PGEE_own<- function(formula, id, data, na.action = NULL, family = gaussian
       #update beta by equation 5.1
       #tic("update beta")
       beta_new<-matrix(beta_old)+geninv(H+N*E)%*%(S-N*E%*%matrix(beta_old))
+
+      #force small beta to zero
+      beta_new[abs(beta_new)<10^-1] <- 0
+
       #estimate R with new beta p1
       ##toc()
       #tic("working matrix")

@@ -38,9 +38,9 @@ PGEE(
 \code{poisson}. The \code{links}, which are not available in \code{gee}, is not available here. The default family
 is \code{gaussian}.}
 
-\item{corstr}{A character string, which specifies the type of correlation structure.
+\item{corstr}{A character string, which specifies the correlation of correlation structure.
 Structures supported in \code{PGEE} are \code{"AR-1"},\code{"exchangeable"}, \code{"fixed"}, \code{"independence"},
-\code{"stat_M_dep"},\code{"non_stat_M_dep"}, and \code{"unstructured"}. The default \code{corstr} type is
+\code{"stat_M_dep"},\code{"non_stat_M_dep"}, and \code{"unstructured"}. The default \code{corstr} correlation is
 \code{"independence"}.}
 
 \item{Mv}{If either \code{"stat_M_dep"}, or \code{"non_stat_M_dep"} is specified in \code{corstr}, then this
@@ -84,8 +84,8 @@ This function was re-wrote partly with RCPP and RCPPEigen for better computation
 \examples{
 #generate data
 set.seed(2021)
-sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
-                         beta0 = rep(1,7), rho = 0.6, type = "ar",
+sim_data <- generateData(nsub = 100, nobs = rep(10, 100),  p = 100,
+                         beta0 = c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
                           dis = "normal", ka = 1)
 
 X=sim_data$X

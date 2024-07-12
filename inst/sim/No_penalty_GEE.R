@@ -10,16 +10,16 @@ source("./inst/others/utils.R")
 
 
 #settings
-n=n_sub=400
+n=nsub=400
 p=7
 beta0=rep(1,7)
 p0=length(beta0)
 beta = c(beta0,rep(0,p-p0))
-n_obs<-rep(10,n_sub);
+nobs<-rep(10,nsub);
 
 ka = 1
 rho=0.6
-type="ar"
+correlation="AR1"
 dis="normal"
 n_sim = 200
 #Please note that n_sim=2 is just for quick demo
@@ -37,18 +37,18 @@ for(tau in tau_list){
     #generate errors for each subject
     e = NULL
     id<-NULL
-    for (i in 1:n_sub){
-      id<-c(id,rep(i,n_obs[i]))
-      sigmai=Siga_cov(rho,type,n_obs[i])
-      if (dis=="normal") ei=rmvnorm(1, mean=rep(0, n_obs[i]), sigma=sigmai)
-      if (dis=="t") ei=rmvt(1, sigmai, df = 4, delta = rep(0, n_obs[i]))
+    for (i in 1:nsub){
+      id<-c(id,rep(i,nobs[i]))
+      sigmai=Siga_cov(rho,correlation,nobs[i])
+      if (dis=="normal") ei=rmvnorm(1, mean=rep(0, nobs[i]), sigma=sigmai)
+      if (dis=="t") ei=rmvt(1, sigmai, df = 4, delta = rep(0, nobs[i]))
       e=c(e,ei);
     }
 
     #generate y and X
-    N=sum(n_obs)
-    nobs=n_obs
-    cn = c(0, cumsum(n_obs))
+    N=sum(nobs)
+    nobs=nobs
+    cn = c(0, cumsum(nobs))
     x=X=matrix(rnorm(N*p),N,p)
     y=X%*%beta+(1+ka*abs(X[,1]))*e
     try({

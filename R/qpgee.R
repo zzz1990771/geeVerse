@@ -29,8 +29,8 @@
 #'           \item{converge}{Boolean indicating whether the algorithm converged.}
 #' @examples
 #' # Example usage:
-#' sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
-#'                          beta0 = rep(1,7), rho = 0.6, type = "ar",
+#' sim_data <- generateData(nsub = 100, nobs = rep(10, 100),  p = 100,
+#'                          beta0 = c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
 #'                           dis = "normal", ka = 1)
 #'
 #' X=sim_data$X
@@ -322,8 +322,8 @@ qpgee.est <-function(x, y,
 #'    of predictions for the new data.
 #' @examples
 #' # Example usage:
-#' sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
-#'                          beta0 = rep(1,7), rho = 0.6, type = "ar",
+#' sim_data <- generateData(nsub = 100, nobs = rep(10, 100),  p = 100,
+#'                          beta0 = c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
 #'                           dis = "normal", ka = 1)
 #'
 #' X=sim_data$X
@@ -382,8 +382,8 @@ predict.qpgee <- function (object, ...)
 #' @examples
 #' # Example usage:
 #'
-#' sim_data <- generateData(n_sub = 20, n_obs = rep(10, 20),  p = 20,
-#'                          beta0 = rep(1,5), rho = 0.1, type = "ar",
+#' sim_data <- generateData(nsub = 20, nobs = rep(10, 20),  p = 20,
+#'                          beta0 = c(rep(1,5),rep(0,15)), rho = 0.1, correlation = "AR1",
 #'                           dis = "normal", ka = 1)
 #'
 #' X=sim_data$X
@@ -612,13 +612,13 @@ qpgee <-
                       nobs, correlation,
                       best_lambda, intercept, betaint, f0,
                       max_it, cutoff)
-      fit$best_lambda = best_lambda
+      fit$lambda = best_lambda
     }else if (length(lambda) == 1){
       fit = qpgee.est(x, y, tau,
                       nobs, correlation,
                       lambda, intercept, betaint, f0,
                       max_it, cutoff)
-      fit$best_lambda = lambda
+      fit$lambda = lambda
     }
     return(fit)
   }

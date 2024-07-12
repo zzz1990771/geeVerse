@@ -70,8 +70,8 @@ of lambdas, and select the best level of penalty with high-dimensional BIC
 \examples{
 # Example usage:
 
-sim_data <- generateData(n_sub = 20, n_obs = rep(10, 20),  p = 20,
-                         beta0 = rep(1,5), rho = 0.1, type = "ar",
+sim_data <- generateData(nsub = 20, nobs = rep(10, 20),  p = 20,
+                         c(rep(1,5),rep(0,15)), rho = 0.1, correlation = "AR1",
                           dis = "normal", ka = 1)
 
 X=sim_data$X

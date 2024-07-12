@@ -247,17 +247,17 @@ qlingee_scad_cv<-function(x,y,betaint,nk,worktype,f0=rep(1,length(y)),tau=0.5,la
   }
   for (l in lambda){
     #this method only applies to balanced data, nk are the same
-    n_obs = nk[1]
-    n_sub = length(nk)
-    sampled_sind = suppressWarnings(split(sample(1:n_sub),1:nfold))
+    nobs = nk[1]
+    nsub = length(nk)
+    sampled_sind = suppressWarnings(split(sample(1:nsub),1:nfold))
     cl = c()
     for(fold in 1:nfold){
       test_sind = sampled_sind[[fold]]
-      train_sind = setdiff(1:n_sub,test_sind)
-      test_ind = as.vector(sapply((test_sind-1)*n_obs+1,function(x) x:(x+n_obs-1)))
-      train_ind = as.vector(sapply((train_sind-1)*n_obs+1,function(x) x:(x+n_obs-1)))
+      train_sind = setdiff(1:nsub,test_sind)
+      test_ind = as.vector(sapply((test_sind-1)*nobs+1,function(x) x:(x+nobs-1)))
+      train_ind = as.vector(sapply((train_sind-1)*nobs+1,function(x) x:(x+nobs-1)))
 
-      result <- qlingee_scad(x[train_ind,],y[train_ind],betaint,rep(n_obs,length(train_sind)),worktype,f0,tau,l,max_it,cutoff)
+      result <- qlingee_scad(x[train_ind,],y[train_ind],betaint,rep(nobs,length(train_sind)),worktype,f0,tau,l,max_it,cutoff)
       cl = c(cl,check_loss(y[test_ind]-x[test_ind,]%*%result$beta,tau))
     }
 

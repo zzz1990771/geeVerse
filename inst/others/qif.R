@@ -23,7 +23,7 @@
 #####################################
 
 generate_binaryOriginal<-function(n,pn,m,str.y,beta.true,rho,sigma2){
-  #n=100;pn=100;m=n_obs;str.y="exch";beta.true=true.alpha;rho=rho
+  #n=100;pn=100;m=nobs;str.y="exch";beta.true=true.alpha;rho=rho
   #n : sample size
   #pn : the number of parameter
   #m : cluster size
@@ -89,8 +89,8 @@ mm <- function(x){
 #Estimate the initial estimator of parameters#
 ##############################################
 qifforspline<-function(X,Y,cfix,nsub,ni,working){#a,str.y,
-  # X=bs;cfix=Z%*%b;nsub=n_sub;ni=n_obs;working=corrQIF[corrStructure]
-  #X=Covbs;nsub=n_sub;ni=n_obs;working=corrQIF[corrStructure]
+  # X=bs;cfix=Z%*%b;nsub=nsub;ni=nobs;working=corrQIF[corrStructure]
+  #X=Covbs;nsub=nsub;ni=nobs;working=corrQIF[corrStructure]
   #X : explanatory variable
   #Y : response variable
   #nsub : samle size
@@ -243,7 +243,7 @@ qifforspline<-function(X,Y,cfix,nsub,ni,working){#a,str.y,
 
 }
 iqif<-function(X,Y,nsub,ni,working){#a,str.y,
-  #X=Covbs;nsub=n_sub;ni=n_obs;working=corrQIF[corrStructure]
+  #X=Covbs;nsub=nsub;ni=nobs;working=corrQIF[corrStructure]
   #X : explanatory variable
   #Y : response variable
   #nsub : samle size
@@ -396,7 +396,7 @@ iqif<-function(X,Y,nsub,ni,working){#a,str.y,
 
 igausqif<-function(X,Y,nsub,ni,working){#a,str.y,
 
-  #X=cbind(X0,Z0);nsub=n_sub;ni=n_obs; working=corrQIF[corrStructure]
+  #X=cbind(X0,Z0);nsub=nsub;ni=nobs; working=corrQIF[corrStructure]
   #X : explanatory variable
   #Y : response variable
   #nsub : samle size
@@ -782,7 +782,7 @@ pplasso_1lambda <- function(z,y,a) {
 #a local quadratic approximation #
 ######################################################
 sqif<-function(best,X,Y,cfix,lambda_si,lambda_pl,working,dsi,nsub,ni,T){
-  # X=Cov;cfix=constant;working=corrQIF[corrStructure];nsub=n_sub;ni=n_obs
+  # X=Cov;cfix=constant;working=corrQIF[corrStructure];nsub=nsub;ni=nobs
   #best: initial estimate
   #lambda : tuning parameter 'lambda'
   #T : tuning parameter 'a'
@@ -1009,7 +1009,7 @@ sqif<-function(best,X,Y,cfix,lambda_si,lambda_pl,working,dsi,nsub,ni,T){
 }
 
 sqif_LASSO<-function(best,X,Y,cfix,lambda_si,lambda_pl,working,dsi,nsub,ni,T){
-  # X=Cov;cfix=constant;working=corrQIF[corrStructure];nsub=n_sub;ni=n_obs
+  # X=Cov;cfix=constant;working=corrQIF[corrStructure];nsub=nsub;ni=nobs
   #best: initial estimate
   #lambda : tuning parameter 'lambda'
   #T : tuning parameter 'a'
@@ -1229,8 +1229,8 @@ sqif_LASSO<-function(best,X,Y,cfix,lambda_si,lambda_pl,working,dsi,nsub,ni,T){
 
 
 # sqif_noApprox<-function(best,X,Y,splineest,lambda_si,lambda_pl,working,dsi,nsub,ni,T){
-#   #best=b$coefficients[-1];X=XPQIF;Y=Y;lambda=lambda;working=corrQIF[corrStructure];nsub=n_sub;ni=n_obs
-#   #best=best;X=XPQIF;Y=Y;lambda=0.2;working=corrQIF[corrStructure];nsub=n_sub;ni=n_obs
+#   #best=b$coefficients[-1];X=XPQIF;Y=Y;lambda=lambda;working=corrQIF[corrStructure];nsub=nsub;ni=nobs
+#   #best=best;X=XPQIF;Y=Y;lambda=0.2;working=corrQIF[corrStructure];nsub=nsub;ni=nobs
 #   #best: initial estimate
 #   #lambda : tuning parameter 'lambda'
 #   #T : tuning parameter 'a'
@@ -1688,8 +1688,8 @@ scadplus <- function(beta,Y,X,n,J,p,working){
 ######################################################
 
 gausqifUnbalanced<-function(best,X,Y,id,lambda,working,nsub,pindex,T){
-  #best=initials;X=XLin;lambda=Lingrid[l];working=corrQIF[corrStructure];nsub=n_sub;pindex=1
-  #best=initials;X=XZ;Y=Y;lambda=bestLinlambda[i];working=corrQIF[corrStructure];nsub=n_sub;ni=n_obs
+  #best=initials;X=XLin;lambda=Lingrid[l];working=corrQIF[corrStructure];nsub=nsub;pindex=1
+  #best=initials;X=XZ;Y=Y;lambda=bestLinlambda[i];working=corrQIF[corrStructure];nsub=nsub;ni=nobs
   #best: initial estimate
   #lambda : tuning parameter 'lambda'
   #T : tuning parameter 'a'
@@ -1914,7 +1914,7 @@ gausqifUnbalanced<-function(best,X,Y,id,lambda,working,nsub,pindex,T){
 }
 
 gausqifLASSO<-function(best,X,Y,lambda,working,nsub,ni,T){
-  #best=initials;X=XZ;Y=Y;lambda=bestLinlambda[i];working=corrQIF[corrStructure];nsub=n_sub;ni=n_obs
+  #best=initials;X=XZ;Y=Y;lambda=bestLinlambda[i];working=corrQIF[corrStructure];nsub=nsub;ni=nobs
   #best: initial estimate
   #lambda : tuning parameter 'lambda'
   #T : tuning parameter 'a'
@@ -2132,7 +2132,7 @@ gausqifLASSO<-function(best,X,Y,lambda,working,nsub,ni,T){
 
 
 gausqif<-function(best,X,Y,lambda_si,lambda_pl,working,dsi,nsub,ni,T){
-  #best=initials;X=XZ;Y=Y;lambda=bestLinlambda[i];working=corrQIF[corrStructure];nsub=n_sub;ni=n_obs
+  #best=initials;X=XZ;Y=Y;lambda=bestLinlambda[i];working=corrQIF[corrStructure];nsub=nsub;ni=nobs
   #best: initial estimate
   #lambda : tuning parameter 'lambda'
   #T : tuning parameter 'a'

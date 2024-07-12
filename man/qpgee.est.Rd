@@ -62,8 +62,8 @@ different working correlation structures.
 }
 \examples{
 # Example usage:
-sim_data <- generateData(n_sub = 100, n_obs = rep(10, 100),  p = 100,
-                         beta0 = rep(1,7), rho = 0.6, type = "ar",
+sim_data <- generateData(nsub = 100, nobs = rep(10, 100),  p = 100,
+                         c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
                           dis = "normal", ka = 1)
 
 X=sim_data$X
