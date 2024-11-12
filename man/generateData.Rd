@@ -4,7 +4,17 @@
 \alias{generateData}
 \title{Generate Data for Simulation}
 \usage{
-generateData(nsub, nobs, p, beta0, rho, correlation = "AR1", dis = "normal", ka)
+generateData(
+  nsub,
+  nobs,
+  p,
+  beta0,
+  rho,
+  correlation = "AR1",
+  dis = "normal",
+  ka = 0,
+  SNPs = NULL
+)
 }
 \arguments{
 \item{nsub}{Integer, the number of subjects.}
@@ -22,6 +32,8 @@ generateData(nsub, nobs, p, beta0, rho, correlation = "AR1", dis = "normal", ka)
 \item{dis}{Character, the distribution of errors ("normal" or "t").}
 
 \item{ka}{1 for heterogeneous errors and 0 for homogeneous errors.}
+
+\item{SNPs}{User can provide simulated or real SNPs for genetic data simulation.}
 }
 \value{
 A list containing two elements: `X`, the matrix of predictors, and `y`, the response vector.
@@ -33,6 +45,6 @@ of correlation, distribution, and the number of observations and subjects.
 }
 \examples{
 sim_data <- generateData(nsub = 100, nobs = rep(10, 100),  p = 200,
-                         beta0 = c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
+                         beta0 = c(rep(1,7),rep(0,193)), rho = 0.6, correlation = "AR1",
                           dis = "normal", ka = 1)
 }

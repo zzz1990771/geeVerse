@@ -17,6 +17,7 @@ CVfit(
   eps,
   maxiter,
   tol,
+  corstr = "independence",
   ncore = 1
 )
 }
@@ -45,6 +46,8 @@ a symbolic description of the model to be fitted.}
 \item{maxiter}{the maximum number of iterations for the convergence of the algorithm.}
 
 \item{tol}{the tolerance level for the convergence of the algorithm.}
+
+\item{corstr}{the correlation structure used.}
 
 \item{ncore}{if greater than 1, the function will use parallel computation.}
 }

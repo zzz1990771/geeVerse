@@ -17,7 +17,7 @@ qpgee(
   f0 = NULL,
   betaint = NULL,
   max_it = 100,
-  cutoff = 10^-1
+  cutoff = 10^-4
 )
 }
 \arguments{
@@ -71,7 +71,7 @@ of lambdas, and select the best level of penalty with high-dimensional BIC
 # Example usage:
 
 sim_data <- generateData(nsub = 20, nobs = rep(10, 20),  p = 20,
-                         c(rep(1,5),rep(0,15)), rho = 0.1, correlation = "AR1",
+                         beta0 = c(rep(1,5),rep(0,15)), rho = 0.1, correlation = "AR1",
                           dis = "normal", ka = 1)
 
 X=sim_data$X

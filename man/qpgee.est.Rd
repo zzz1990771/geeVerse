@@ -15,7 +15,7 @@ qpgee.est(
   betaint = NULL,
   f0 = NULL,
   max_it = 100,
-  cutoff = 10^-1
+  cutoff = 10^-4
 )
 }
 \arguments{
@@ -29,7 +29,7 @@ qpgee.est(
 
 \item{correlation}{A string specifying the working correlation structure.
 Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
-"Tri" (Tri-diagonal), and "independence" (Independent).}
+"Tri" (Tri-diagonal), "independence" (Independent), and "unstructured".}
 
 \item{lambda}{The penalty parameter for regularization (default is 0.1).}
 
@@ -63,7 +63,7 @@ different working correlation structures.
 \examples{
 # Example usage:
 sim_data <- generateData(nsub = 100, nobs = rep(10, 100),  p = 100,
-                         c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
+                         beta0 = c(rep(1,7),rep(0,93)), rho = 0.6, correlation = "AR1",
                           dis = "normal", ka = 1)
 
 X=sim_data$X

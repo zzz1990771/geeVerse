@@ -8,12 +8,12 @@ Siga_cov(rho, correlation, nt)
 }
 \arguments{
 \item{rho}{Numeric, the correlation coefficient used for generating the covariance matrix.
-For "cs", it represents the common correlation between any two observations.
+For "cs" or "exchangeable", it represents the common correlation between any two observations.
 For "AR1", it represents the correlation between two consecutive observations,
 with the correlation decreasing for observations further apart.}
 
 \item{correlation}{Character, specifies the correlation of correlation structure for the covariance matrix.
-Options are "cs" for compound symmetry, "AR1" for autoregressive, and any other input
+Options are "cs" or "exchangeable" for compound symmetry, "AR1" for autoregressive, and any other input
 will result in an identity matrix.}
 
 \item{nt}{Integer, the dimension of the square covariance matrix (number of time points or observations).}

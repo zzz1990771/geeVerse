@@ -34,7 +34,7 @@ X=sim_data$X
 y=sim_data$y
 
 #fit qpgee
-qpgee.fit = qpgee(X,y,tau=0.5,nobs=rep(10, 100))
+qpgee.fit = qpgee(X,y,tau=0.5,nobs=rep(10, 100),lambda = 0.1)
 predict(qpgee.fit)
 
 }
