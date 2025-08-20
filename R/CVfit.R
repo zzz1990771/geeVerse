@@ -42,7 +42,9 @@
 #' @export
 CVfit <-
   function(formula, id, data, family, scale.fix, scale.value, fold,
-           lambda.vec, pindex, eps, maxiter, tol, corstr = "independence", ncore = 1) {
+           pindex, eps, maxiter, tol,
+           lambda.vec = exp(seq(log(10),log(0.1),length.out = 30)),
+           corstr = "independence", ncore = 1) {
     call_cv <- match.call()
     mf <- match.call(expand.dots = FALSE)
 

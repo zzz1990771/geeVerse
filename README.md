@@ -31,15 +31,23 @@ Running an Example:
 
 ```R
 #settings
-sim_data <- generateData(nsub = 20, nobs = rep(10, 20),  p = 20,
-                         beta0 = c(rep(1,5),rep(0,15)), rho = 0.1, correlation = "AR1",
-                          dis = "normal", ka = 1)
+sim_data <- generate_data(
+  nsub = 50, nobs = rep(5, 50), p = 10,
+  beta0 = c(rep(1, 5), rep(0, 5)), rho = 0.3
+)
 
-X=sim_data$X
-y=sim_data$y
+# 2. Fit the model using the formula interface
+fit <- qpgee(
+  y ~ . - id,
+  data = sim_data,
+  id = sim_data$id,
+  tau = 0.5,
+  method = "HBIC"
+)
 
-#fit qpgee with auto selected lambda
-qpgee.fit = qpgee(X,y,tau=0.5,nobs=rep(10, 20),ncore=1)
-qpgee.fit$beta
+# 3. View the summary of the results
+summary(fit)
 ```
 
+## Updates
+This package was re-factored with major functions to make it more consistent with other R packages.

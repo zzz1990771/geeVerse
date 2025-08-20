@@ -145,7 +145,7 @@ compile_result(QPGEE_results_highdim,beta0= c(rep(1,7),rep(0,993)))
 
 # Note that we only showcase p = 200 here.
 # For p = 2000, just change p from 200 to 2000.
-p = 200
+p = 1000
 # Initialize some vectors to store computation time
 # No palatalization is used for all three methods tested
 qpgee_tvec = c()
@@ -156,17 +156,17 @@ pgee_pkg_tvec = c()
 n_sim = 1
 for (i in 1:n_sim) {
   #generate data
-  nsub = 100
+  nsub = 200
   nobs = rep(10, nsub)
-  id = rep(1:nsub,each = nobs)
+  id = rep(1:nsub,each = 10)
   sim_data = generateData(nsub= nsub, nobs = rep(10, nsub),  p = p,
-                          beta0 = c(rep(1,7),rep(0,193)), rho = 0.6, correlation = "exchangeable")
+                          beta0 = c(rep(1,7),rep(0,993)), rho = 0.6, correlation = "exchangeable")
   y = sim_data$y
   x = sim_data$X
 
   #fit qpgee
   qpgee_time = system.time(qpgee_fit <-
-                             qpgee(x,y,lambda = 0.1, tau=0.5,nobs=nobs,cutoff = 10^-3))[3]
+                             qpgee(x,y,lambda = 0.1, tau=0.5,nobs=nobs))[3]
   qpgee_tvec = c(qpgee_tvec,qpgee_time)
 
   #fit own pgee

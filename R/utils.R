@@ -21,6 +21,22 @@ pp_scad_sim <- function(z, lambda_si, lambda_pl = 0, a = 3.7) {
 }
 
 
+#' SCAD Penalty Derivative (Linearized Approximation)
+#'
+#' This function calculates the derivative of the SCAD penalty, often used in
+#' the local linear approximation algorithm.
+#'
+#' @param beta A vector of coefficients.
+#' @param lambda The main penalty tuning parameter.
+#' @param a The second tuning parameter of the SCAD penalty (often 3.7).
+#' @return A vector of penalty derivative values.
+#' @keywords internal
+pp_scad_lin <- function(beta, lambda, a = 3.7) {
+  beta <- abs(beta)
+  val <- lambda * ((beta <= lambda) + (a * lambda - beta) * (beta > lambda) / ((a - 1) * lambda))
+  val * (beta < a * lambda)
+}
+
 # correlated error function
 #' Generate Covariance Matrix
 #'
@@ -32,7 +48,7 @@ pp_scad_sim <- function(z, lambda_si, lambda_pl = 0, a = 3.7) {
 #'        For "cs" or "exchangeable", it represents the common correlation between any two observations.
 #'        For "AR1", it represents the correlation between two consecutive observations,
 #'        with the correlation decreasing for observations further apart.
-#' @param correlation Character, specifies the correlation of correlation structure for the covariance matrix.
+#' @param corstr Character, specifies the correlation of correlation structure for the covariance matrix.
 #'        Options are "cs" or "exchangeable" for compound symmetry, "AR1" for autoregressive, and any other input
 #'        will result in an identity matrix.
 #' @param nt Integer, the dimension of the square covariance matrix (number of time points or observations).
@@ -40,11 +56,11 @@ pp_scad_sim <- function(z, lambda_si, lambda_pl = 0, a = 3.7) {
 #' @return A square matrix of dimension `nt` representing the specified covariance structure.
 #'
 #' @export
-Siga_cov <- function(rho, correlation, nt) {
+Siga_cov <- function(rho, corstr, nt) {
   sigma <- matrix(0, nt, nt)
-  if (correlation == "cs" || correlation == "exchangeable") {
+  if (corstr == "cs" || corstr == "exchangeable") {
     sigma <- (1 - rho) * diag(nt) + rho * matrix(1, nt, nt)
-  } else if (correlation == "AR1") {
+  } else if (corstr == "AR1") {
     for (i in 1:nt) {
       for (j in 1:nt) {
         sigma[i, j] <- rho^(abs(i - j))
@@ -111,7 +127,7 @@ compile_result.qpgee <- function(qpgee_results, beta0, threshold = 10^-3) {
   for (sim in 1:n_sim) {
     # print(sim)
     selected <- rep(FALSE, p)
-    selected <- abs(qpgee_results[[sim]]$beta) > threshold
+    selected <- abs(qpgee_results[[sim]]$coefficients) > threshold
     selected_true <- abs(beta0) > threshold
     correct <- FALSE
     TP <- sum(selected & selected_true)
@@ -122,20 +138,23 @@ compile_result.qpgee <- function(qpgee_results, beta0, threshold = 10^-3) {
       correct <- TRUE
     }
     beta_est <- rep(0, p)
-    beta_est <- qpgee_results[[sim]]$beta
+    beta_est <- qpgee_results[[sim]]$coefficients
     MSE <- sum((beta_est - beta0)^2)
     MAD <- sum(abs(beta_est - beta0))
     result_structure[sim, ] <- c(F1, correct, TP, FP, MSE, MAD)
   }
   if (n_sim == 1) {
     results_table <- rbind(apply(result_structure, 2, mean))
+    results_table <- as.vector(results_table)
+    names(results_table) <- c("F1", "correct%", "TP", "FP", "MSE", "MAD")
   } else {
     results_table <- rbind(
       apply(result_structure, 2, mean),
       apply(result_structure, 2, stats::sd)
     )
+    colnames(results_table) <- c("F1", "correct%", "TP", "FP", "MSE", "MAD")
   }
-  colnames(results_table) <- c("F1", "correct%", "TP", "FP", "MSE", "MAD")
+
   return(results_table)
 }
 

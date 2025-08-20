@@ -4,7 +4,7 @@
 \alias{Siga_cov}
 \title{Generate Covariance Matrix}
 \usage{
-Siga_cov(rho, correlation, nt)
+Siga_cov(rho, corstr, nt)
 }
 \arguments{
 \item{rho}{Numeric, the correlation coefficient used for generating the covariance matrix.
@@ -12,7 +12,7 @@ For "cs" or "exchangeable", it represents the common correlation between any two
 For "AR1", it represents the correlation between two consecutive observations,
 with the correlation decreasing for observations further apart.}
 
-\item{correlation}{Character, specifies the correlation of correlation structure for the covariance matrix.
+\item{corstr}{Character, specifies the correlation of correlation structure for the covariance matrix.
 Options are "cs" or "exchangeable" for compound symmetry, "AR1" for autoregressive, and any other input
 will result in an identity matrix.}
 

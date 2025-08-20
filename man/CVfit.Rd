@@ -12,11 +12,11 @@ CVfit(
   scale.fix,
   scale.value,
   fold,
-  lambda.vec,
   pindex,
   eps,
   maxiter,
   tol,
+  lambda.vec = exp(seq(log(10), log(0.1), length.out = 30)),
   corstr = "independence",
   ncore = 1
 )
@@ -37,8 +37,6 @@ a symbolic description of the model to be fitted.}
 
 \item{fold}{the number of folds to be used in the cross-validation.}
 
-\item{lambda.vec}{a vector of lambda values for which the cross-validation error will be calculated.}
-
 \item{pindex}{an optional numeric vector specifying a parameter index.}
 
 \item{eps}{the threshold for convergence criteria.}
@@ -46,6 +44,8 @@ a symbolic description of the model to be fitted.}
 \item{maxiter}{the maximum number of iterations for the convergence of the algorithm.}
 
 \item{tol}{the tolerance level for the convergence of the algorithm.}
+
+\item{lambda.vec}{a vector of lambda values for which the cross-validation error will be calculated.}
 
 \item{corstr}{the correlation structure used.}
 

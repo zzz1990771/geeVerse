@@ -41,18 +41,15 @@
 #' @examples
 #' # generate data
 #' set.seed(2021)
-#' sim_data <- generateData(
+#' sim_data <- generate_data(
 #'   nsub = 100, nobs = rep(10, 100), p = 100,
-#'   c(rep(1, 7), rep(0, 93)), rho = 0.6, correlation = "AR1",
+#'   beta0 = c(rep(1, 7), rep(0, 93)), rho = 0.6, corstr = "AR1",
 #'   dis = "normal", ka = 1
 #' )
 #'
-#' X <- sim_data$X
-#' y <- sim_data$y
-#' id <- rep(1:100, each = 10)
-#' data <- data.frame(X, y, id)
 #'
-#' PGEE_fit <- PGEE("y ~.-id-1", id = id, data = data, corstr = "exchangeable", lambda = 0.01)
+#' PGEE_fit <- PGEE("y ~.-id-1", id = id, data = sim_data,
+#'  corstr = "exchangeable", lambda = 0.01)
 #' PGEE_fit$coefficients
 #' @import Rcpp
 #' @importFrom stats gaussian

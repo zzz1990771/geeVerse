@@ -2,83 +2,92 @@
 % Please edit documentation in R/qpgee.R
 \name{qpgee}
 \alias{qpgee}
-\title{Quantile Penalized Generalized Estimating Equations with Auto Selected Penalty level}
+\alias{qpgee.formula}
+\alias{qpgee.default}
+\title{Quantile Penalized Generalized Estimating Equations (QPGEE)}
 \usage{
-qpgee(
+qpgee(x, ...)
+
+\method{qpgee}{formula}(x, id, data = parent.frame(), ...)
+
+\method{qpgee}{default}(
   x,
   y,
+  nobs,
   tau = 0.5,
-  method = "HBIC",
-  ncore = 1,
-  nobs = rep(1, length(y)),
-  correlation = "exchangeable",
+  corstr = "exchangeable",
   lambda = NULL,
-  intercept = FALSE,
-  f0 = NULL,
+  method = "HBIC",
+  intercept = TRUE,
   betaint = NULL,
-  max_it = 100,
-  cutoff = 10^-4
+  nfold = 5,
+  ncore = 1,
+  control = qpgeeControl(),
+  ...
 )
 }
 \arguments{
 \item{x}{A matrix of predictors.}
 
+\item{...}{Other arguments passed to methods.}
+
+\item{id}{A vector identifying the clusters (subjects).}
+
+\item{data}{An optional data frame.}
+
 \item{y}{A numeric vector of response variables.}
 
-\item{tau}{The quantile to be estimated (default is 0.5, the median).}
+\item{nobs}{A numeric vector of observations per subject.}
 
-\item{method}{The criterion to select level of penalty. Currently it only
-supports "HBIC".}
+\item{tau}{The quantile to be estimated (default is 0.5).}
 
-\item{ncore}{A numeric value specifying how many core to use.}
-
-\item{nobs}{A numeric vector indicating the number of observations per subject.}
-
-\item{correlation}{A string specifying the working correlation structure.
+\item{corstr}{A string specifying the working correlation structure.
 Options include "exchangeable" (Exchangeable), "AR1" (Autoregressive),
-"Tri" (Tri-diagonal), and "exchangeable" (Independent).}
+"Tri" (Tri-diagonal), "independence" (Independent), and "unstructured".}
 
-\item{lambda}{A vector of penalty parameter for regularization. If not provided,
-a grid will be provided by this function.}
+\item{lambda}{A vector of penalty parameters. If NULL, auto-selection is performed.}
 
-\item{intercept}{Whether to include an intercept when estimating.}
+\item{method}{Criterion for penalty selection ("HBIC" or "CV").}
 
-\item{f0}{estimated conditional error distributions.}
+\item{intercept}{Logical; if TRUE, an intercept is added.}
 
 \item{betaint}{Initial values for the beta coefficients. If NULL,
 non-longitudinal quantile regression is used for initialization.}
 
-\item{max_it}{Maximum number of iterations (default is 100).}
+\item{nfold}{The number of folds used in cross-validation.}
 
-\item{cutoff}{Threshold for coefficient shrinkage (default is 0.1).}
+\item{ncore}{Number of cores for parallel processing.}
+
+\item{control}{A list of control parameters from `qpgeeControl()`, such as
+max_it, epsilon, shrinkCutoff, standardize and trace.}
 }
 \value{
-A list containing the following components:
-          \item{beta}{Estimated beta coefficients.}
-          \item{g}{Fitted values of the linear predictor.}
-          \item{R}{Estimated working correlation matrix.}
-          \item{X_selected}{Indices of selected predictors.}
-          \item{mcl}{Mean check loss.}
-          \item{hbic}{Hannan-Quinn Information Criterion value.}
-          \item{converge}{Boolean indicating whether the algorithm converged.}
+An object of class `qpgee`.
 }
 \description{
-This function automatically select the penalty level by going through a list
-of lambdas, and select the best level of penalty with high-dimensional BIC
-(HBIC) or cross-validation (CV).
+Fits a quantile penalized generalized estimating equation (QPGEE)
+model for longitudinal data using penalized quantile regression with
+different working correlation structures.
 }
 \examples{
-# Example usage:
+# Quick Example:
+# 1. Generate some data
+set.seed(123)
+sim_data <- generate_data(
+  nsub = 50, nobs = rep(5, 50), p = 10,
+  beta0 = c(rep(1, 5), rep(0, 5)), rho = 0.3
+)
 
-sim_data <- generateData(nsub = 20, nobs = rep(10, 20),  p = 20,
-                         beta0 = c(rep(1,5),rep(0,15)), rho = 0.1, correlation = "AR1",
-                          dis = "normal", ka = 1)
+# 2. Fit the model using the formula interface
+fit <- qpgee(
+  y ~ . - id,
+  data = sim_data,
+  id = sim_data$id,
+  tau = 0.5,
+  method = "HBIC"
+)
 
-X=sim_data$X
-y=sim_data$y
-
-#fit qpgee with auto selected lambda
-qpgee.fit = qpgee(X,y,tau=0.5,nobs=rep(10, 20),ncore=1)
-qpgee.fit$beta
+# 3. View the summary of the results
+summary(fit)
 
 }
