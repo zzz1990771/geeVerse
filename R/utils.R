@@ -90,7 +90,7 @@ logspace <- function(d1, d2, n = 20) exp(log(10) * seq(d1, d2, length.out = n))
 #'
 #' @param qpgee_results A (list of) fitted qpgee model.
 #' @param beta0 True beta used in true data generation process.
-#' @param threshold Integer, the threshold to determine whether a esimated beta should
+#' @param threshold Integer, the threshold to determine whether a estimated beta should
 #' be consider as 0.
 #'
 #' @return a vector contains correct percentage, TP, FP, MSE and MAD and its standard
@@ -109,7 +109,7 @@ compile_result <- function(qpgee_results, beta0, threshold = 10^-3) {
 #'
 #' @param qpgee_results A (list of) fitted qpgee model.
 #' @param beta0 True beta used in true data generation process.
-#' @param threshold Integer, the threshold to determine whether a esimated beta should
+#' @param threshold Integer, the threshold to determine whether a estimated beta should
 #' be consider as 0.
 #'
 #' @return a vector contains correct percentage, TP, FP, MSE and MAD and its standard
@@ -166,7 +166,7 @@ compile_result.qpgee <- function(qpgee_results, beta0, threshold = 10^-3) {
 #'
 #' @param qpgee_results A (list of) fitted qpgee model.
 #' @param beta0 True beta used in true data generation process.
-#' @param threshold Integer, the threshold to determine whether a esimated beta should
+#' @param threshold Integer, the threshold to determine whether a estimated beta should
 #' be consider as 0.
 #'
 #' @return a vector contains correct percentage, TP, FP, MSE and MAD and its standard

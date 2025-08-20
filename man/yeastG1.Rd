@@ -23,7 +23,7 @@ Spellman, P. T., Sherlock, G., Zhang, M. Q., Iyer, V. R., Anders, K., Eisen, M. 
   Comprehensive identification of cell cycle-regulated genes of the yeast Saccharomyces cerevisiae by microarray hybridization.
   Molecular biology of the cell, 9(12), 3273-3297.
 
-Wang, L., Zhou, J., and Qu, A. (2012). Penalized generalized estimating equations for high-dimensional longitudinal data anaysis. \emph{Biometrics}, \bold{68}, 353--360.
+Wang, L., Zhou, J., and Qu, A. (2012). Penalized generalized estimating equations for high-dimensional longitudinal data analysis. \emph{Biometrics}, \bold{68}, 353--360.
 }
 \usage{
 yeastG1

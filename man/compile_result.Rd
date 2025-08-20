@@ -11,7 +11,7 @@ compile_result(qpgee_results, beta0, threshold = 10^-3)
 
 \item{beta0}{True beta used in true data generation process.}
 
-\item{threshold}{Integer, the threshold to determine whether a esimated beta should
+\item{threshold}{Integer, the threshold to determine whether a estimated beta should
 be consider as 0.}
 }
 \value{
