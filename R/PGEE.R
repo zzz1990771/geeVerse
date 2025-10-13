@@ -34,6 +34,7 @@
 #' @param tol The tolerance level that is used in the estimation algorithm. The default value is \code{10^-3}.
 #' @param silent A logical variable; if false, the regression parameter estimates at each iteration are
 #' printed. The default value is \code{TRUE}.
+#' @param fastginv A logical variable for usage of fast implementation of generalized matrix inverse.
 #'
 #' @return a PGEE object, which includes:
 #'         fitted coefficients - the fitted single index coefficients with unit norm and first component being non negative
@@ -55,19 +56,27 @@
 #' @importFrom stats gaussian
 #' @importFrom stats model.extract
 #' @importFrom stats model.matrix
+#' @importFrom MASS ginv
 #'
 #' @export
 PGEE <- pgee <- function(formula, id, data, na.action = NULL, family = gaussian(link = "identity"),
                          corstr = "independence", Mv = NULL, beta_int = NULL, R = NULL, scale.fix = TRUE,
                          scale.value = 1, lambda, pindex = NULL, eps = 10^-6, maxiter = 30, tol = 10^-3,
-                         silent = TRUE) {
+                         silent = TRUE, fastginv = TRUE) {
+
+  if (fastginv) {
+    my_ginv <- geninv
+  } else {
+    my_ginv <- MASS::ginv
+  }
+
   # pass the call
   call <- match.call()
   m <- match.call(expand.dots = FALSE)
 
   # initilize non-arguments
   m$beta_int <- m$family <- m$link <- m$varfun <-
-    m$corstr <- m$Mv <- m$R <-
+    m$corstr <- m$Mv <- m$R <- m$fastginv <-
     m$scale.fix <- m$scale.value <-
     m$lambda <- m$eps <- m$pindex <-
     m$maxiter <- m$tol <- m$silent <- NULL
@@ -244,7 +253,7 @@ PGEE <- pgee <- function(formula, id, data, na.action = NULL, family = gaussian(
 
 
   # initial estimates PGEE
-  S.H.E.val <- S_H_E_M(N, nt, y, X, nx, family, beta_new, Rhat, fihat, lambda, pindex, eps)
+  S.H.E.val <- S_H_E_M(N, nt, y, X, nx, family, beta_new, Rhat, fihat, lambda, pindex, eps, fastginv)
   S <- S.H.E.val$S
   H <- S.H.E.val$H
   E <- S.H.E.val$E
@@ -258,8 +267,7 @@ PGEE <- pgee <- function(formula, id, data, na.action = NULL, family = gaussian(
     beta_old <- beta_new
     # update beta by equation 5.1
     # tic("update beta")
-    beta_new <- matrix(beta_old) + geninv(H + N * E) %*% (S - N * E %*% matrix(beta_old))
-
+    beta_new <- matrix(beta_old) + my_ginv(H + N * E) %*% (S - N * E %*% matrix(beta_old))
     # force small beta to zero
     # beta_new[abs(beta_new)<10^-1] <- 0
 
@@ -272,7 +280,7 @@ PGEE <- pgee <- function(formula, id, data, na.action = NULL, family = gaussian(
     # toc()
     # estimate SHEM with new beta p2
 
-    S.H.E.M.val <- S_H_E_M(N, nt, y, X, nx, family, beta_new, Rhat, fihat, lambda, pindex, eps)
+    S.H.E.M.val <- S_H_E_M(N, nt, y, X, nx, family, beta_new, Rhat, fihat, lambda, pindex, eps, fastginv)
     S <- S.H.E.M.val$S
     H <- S.H.E.M.val$H
     E <- S.H.E.M.val$E
@@ -291,8 +299,8 @@ PGEE <- pgee <- function(formula, id, data, na.action = NULL, family = gaussian(
 
 
   estb <- beta_new
-  nv <- naive.var <- geninv(H + N * E)
-  rv <- robust.var <- geninv(H + N * E) %*% M %*% geninv(H + N * E)
+  nv <- naive.var <- my_ginv(H + N * E)
+  rv <- robust.var <- my_ginv(H + N * E) %*% M %*% my_ginv(H + N * E)
   final_iter <- iter
   final_diff <- diff
 
@@ -516,8 +524,15 @@ mycor_gee2 <- function(N, nt, y, X, family, beta_new, corstr, Mv, maxclsz, R, sc
 
 # solve for H and E, with SCAD.
 # S is GEE with the estimated R ; E is penalty matrix;
-S_H_E_M <- function(N, nt, y, X, nx, family, beta_new, Rhat, fihat, lambda, pindex, eps = 10^-6) {
-  # tic("whole SHEM")
+S_H_E_M <- function(N, nt, y, X, nx, family, beta_new, Rhat, fihat, lambda,
+                    pindex, eps = 10^-6, fastginv = TRUE) {
+
+  if (fastginv) {
+    my_ginv <- geninv
+  } else {
+    my_ginv <- MASS::ginv
+  }
+
   aindex <- cumsum(nt)
   index <- c(0, aindex[-length(aindex)])
 
@@ -561,16 +576,16 @@ S_H_E_M <- function(N, nt, y, X, nx, family, beta_new, Rhat, fihat, lambda, pind
     # bigV<-fihat*bigV
 
     ## This is S in Wang et al.(2012) eq4
-    sum200 <- t(bigD) %*% geninv(bigV) %*% ym # this is like gradient
+    sum200 <- t(bigD) %*% my_ginv(bigV) %*% ym # this is like gradient
     sum201 <- sum201 + sum200
 
     ## This is H in Wang et al.(2012)
-    sum300 <- t(bigD) %*% geninv(bigV) %*% bigD # this is for information matrix.
+    sum300 <- t(bigD) %*% my_ginv(bigV) %*% bigD # this is for information matrix.
     sum301 <- sum301 + sum300
 
     ## Speed up the code##
-    SSA <- sqrt(geninv(bigA))
-    SRhat <- geninv(Rhat[1:nt[i], 1:nt[i], i])
+    SSA <- sqrt(my_ginv(bigA))
+    SRhat <- my_ginv(Rhat[1:nt[i], 1:nt[i], i])
     SSAym <- (SSA %*% ym)
 
     sum400 <- t(bigD) %*% SSA %*% SRhat %*% (SSAym %*% t(SSAym)) %*% SRhat %*% SSA %*% bigD
@@ -583,6 +598,7 @@ S_H_E_M <- function(N, nt, y, X, nx, family, beta_new, Rhat, fihat, lambda, pind
   E <- E
   M <- fihat * sum401
   # toc()
+  #browser()
   return(list("S" = S, "H" = H, "E" = E, "M" = M))
 }
 

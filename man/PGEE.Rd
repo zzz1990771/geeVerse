@@ -21,7 +21,8 @@ PGEE(
   eps = 10^-6,
   maxiter = 30,
   tol = 10^-3,
-  silent = TRUE
+  silent = TRUE,
+  fastginv = TRUE
 )
 }
 \arguments{
@@ -72,6 +73,8 @@ is \code{NULL}. However, in case of a model with intercept, the intercept parame
 
 \item{silent}{A logical variable; if false, the regression parameter estimates at each iteration are
 printed. The default value is \code{TRUE}.}
+
+\item{fastginv}{A logical variable for usage of fast implementation of generalized matrix inverse.}
 }
 \value{
 a PGEE object, which includes:

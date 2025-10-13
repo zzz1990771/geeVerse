@@ -12,19 +12,20 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // geninv
-SEXP geninv(SEXP GG);
-RcppExport SEXP _geeVerse_geninv(SEXP GGSEXP) {
+SEXP geninv(SEXP GG, double tol);
+RcppExport SEXP _geeVerse_geninv(SEXP GGSEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type GG(GGSEXP);
-    rcpp_result_gen = Rcpp::wrap(geninv(GG));
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    rcpp_result_gen = Rcpp::wrap(geninv(GG, tol));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_geeVerse_geninv", (DL_FUNC) &_geeVerse_geninv, 1},
+    {"_geeVerse_geninv", (DL_FUNC) &_geeVerse_geninv, 2},
     {NULL, NULL, 0}
 };
 

@@ -27,7 +27,9 @@ generate_data(
 
 \item{rho}{Numeric, the correlation coefficient used in generating correlated errors.}
 
-\item{corstr}{Character, the correlation of correlation structure (default is autoregressive).}
+\item{corstr}{Character, specifies the correlation of correlation structure for the covariance matrix.
+Options are "cs" or "exchangeable" for compound symmetry, "AR1" for autoregressive, and any other input
+will result in an identity matrix.}
 
 \item{dis}{Character, the distribution of errors ("normal" or "t").}
 

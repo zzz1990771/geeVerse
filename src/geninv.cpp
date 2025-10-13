@@ -1,88 +1,48 @@
 #include <Rcpp.h>
 #include <RcppEigen.h>
-#include <Eigen/LU>
-#include <Eigen/SparseCholesky>
-#include <vector>
-#include <functional>
-#include <algorithm>
-#include <iostream>
-#include <cmath>
+#include <Eigen/SVD>
+#include <limits>
 
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppEigen so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppEigen)]]
 
 using namespace Rcpp;
-using namespace RcppEigen;
+using namespace Eigen;
 
 // [[Rcpp::export]]
-SEXP geninv(SEXP GG){
+SEXP geninv(SEXP GG, double tol = 1.490116e-08){ // Default tol = sqrt(.Machine$double.eps)
   try {
-    using Eigen::Map;
-    using Eigen::MatrixXd;
-    using Eigen::Lower;
-    const Eigen::Map<MatrixXd> G(as<Map<MatrixXd> >(GG));
-    const int n(G.rows());
-    const int m(G.cols());
-    const int mn(std::min(n, m));
+    const Map<MatrixXd> G(as<Map<MatrixXd> >(GG));
 
-    bool transp(false);
-    double tol(1.0e-10);
-    MatrixXd A(MatrixXd(mn, mn));
-    MatrixXd L(MatrixXd(mn, mn).setZero());
+    JacobiSVD<MatrixXd> svd(G, ComputeThinU | ComputeThinV);
 
+    VectorXd singular_values = svd.singularValues();
 
-
-    if (n < m) {
-      transp = true;
-      A = G * G.transpose();
-    } else {
-      A = G.transpose() * G;
+    // --- EXACT MASS::ginv TOLERANCE LOGIC ---
+    double threshold = 0.0;
+    if (singular_values.size() > 0) {
+      // The threshold is relative to the *largest* singular value
+      threshold = tol * singular_values(0);
     }
+    // ---
 
-    int r = 0;
-    for (int k = 0; k < mn; k++) {
-      r++;
+    VectorXd singular_values_inv(singular_values.size());
 
-      if (r == 1) {
-        L.block(k, r - 1, mn - k, 1) = A.block(k, k, mn - k, 1);
+    for (int i = 0; i < singular_values.size(); ++i) {
+      if (singular_values(i) > threshold) { // Compare to the new threshold
+        singular_values_inv(i) = 1.0 / singular_values(i);
       } else {
-        L.block(k, r - 1, mn - k, 1) = A.block(k, k, mn - k, 1) -
-                L.block(k, 0, mn - k, r - 1) * L.block(k, 0, 1, r - 1).adjoint();
-      }
-
-      if (L(k, r - 1) > tol) {
-        L.block(k, r - 1, 1, 1) = L.block(k, r - 1, 1, 1).array().sqrt();
-        if (k + 1 < mn) {
-          L.block(k + 1, r - 1, mn - k - 1, 1) = L.block(k + 1, r - 1, mn - k - 1, 1) / L(k, r - 1);
-        }
-      } else {
-        r--;
+        singular_values_inv(i) = 0.0;
       }
     }
 
-    MatrixXd M(MatrixXd(r, r));
-    M = L.block(0, 0, mn, r);
-    M = (M.transpose() * M).inverse();
-
-    MatrixXd Y(MatrixXd(m, n));
-
-    if (transp) {
-      Y = G.adjoint() * L.block(0, 0, mn, r) * M * M * L.block(0, 0, mn, r).adjoint();
-    } else {
-      Y = L.block(0, 0, mn, r) * M * M * L.block(0, 0, mn, r).adjoint() * G.adjoint();
-    }
+    MatrixXd Y = svd.matrixV() * singular_values_inv.asDiagonal() * svd.matrixU().transpose();
 
     return wrap(Y);
+
   } catch (std::exception &ex) {
     forward_exception_to_r(ex);
   } catch (...) {
     ::Rf_error("C++ exception (unknown reason)");
   }
-  return R_NilValue; //-Wall
+  return R_NilValue;
 }
-
-
-
-

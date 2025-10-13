@@ -1,7 +1,7 @@
 Package: geeVerse
 Type: Package
 Title: A Comprehensive Analysis of High Dimensional Longitudinal Data
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
     person("Tianhai", "Zu", email = "zuti@mail.uc.edu", role = c("aut", "cre")),
     person("Brittany", "Green", email = "brittany.green.1@louisville.edu", role = c("aut","ctb")),
@@ -23,7 +23,8 @@ Imports:
     quantreg,
     Rcpp (>= 0.10.2),
     doParallel,
-    foreach
+    foreach,
+    MASS
 Suggests: methods
 LinkingTo: Rcpp, RcppEigen
 RoxygenNote: 7.3.2

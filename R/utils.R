@@ -184,7 +184,7 @@ compile_result.default <- function(qpgee_results, beta0, threshold = 0.1) {
   for (sim in 1:n_sim) {
     # print(sim)
     selected <- rep(FALSE, p)
-    selected <- abs(qpgee_results[[sim]]$beta) > threshold
+    selected <- abs(qpgee_results[[sim]]$coefficients) > threshold
     selected_true <- abs(beta0) > threshold
     correct <- FALSE
     TP <- sum(selected & selected_true)
@@ -195,7 +195,7 @@ compile_result.default <- function(qpgee_results, beta0, threshold = 0.1) {
       correct <- TRUE
     }
     beta_est <- rep(0, p)
-    beta_est <- qpgee_results[[sim]]$beta
+    beta_est <- qpgee_results[[sim]]$coefficients
     MSE <- sum((beta_est - beta0)^2)
     MAD <- sum(abs(beta_est - beta0))
     result_structure[sim, ] <- c(F1, correct, TP, FP, MSE, MAD)

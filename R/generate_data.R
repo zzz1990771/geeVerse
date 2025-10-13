@@ -9,7 +9,9 @@
 #' @param p Integer, the number of predictors.
 #' @param beta0 Numeric vector, initial coefficients for the first few predictors.
 #' @param rho Numeric, the correlation coefficient used in generating correlated errors.
-#' @param corstr Character, the correlation of correlation structure (default is autoregressive).
+#' @param corstr Character, specifies the correlation of correlation structure for the covariance matrix.
+#'        Options are "cs" or "exchangeable" for compound symmetry, "AR1" for autoregressive, and any other input
+#'        will result in an identity matrix.
 #' @param dis Character, the distribution of errors ("normal" or "t").
 #' @param ka 1 for heterogeneous errors and 0 for homogeneous errors.
 #' @param SNPs User can provide simulated or real SNPs for genetic data simulation.

@@ -54,10 +54,8 @@ qpgee.formula <- function(x, id, data = parent.frame(), ...) {
   mf_call$drop.unused.levels <- TRUE
   mf_call[[1L]] <- as.name("model.frame")
 
-  mf <- eval(mf_call, environment(formula))
-
   # Cluster information
-  id_var <- model.extract(mf, "id")
+  id_var <- eval(substitute(id), envir = data, enclos = parent.frame())
   if (is.null(id_var)) {
     stop("'id' variable not found in the data frame or the environment.")
   }
@@ -152,6 +150,7 @@ qpgee.default <- function(x, y, nobs, tau = 0.5, corstr = "exchangeable",
         }, error = function(e) { list(hbic = Inf) })
         c(lambda = l, hbic = res$hbic)
       }
+
       fit_results <- as.data.frame(fit_results)
       best_lambda <- fit_results$lambda[which.min(fit_results$hbic)]
 
